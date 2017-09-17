@@ -1,0 +1,49 @@
+{
+  "name": "tplink-smarthome-simulator",
+  "version": "0.0.1",
+  "description": "TP-Link Smarthome Device Simulator",
+  "author": "Patrick Seal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/plasticrake/tplink-smarthome-simulator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/plasticrake/tplink-smarthome-simulator/issues",
+    "email": "code@plasticrake.com"
+  },
+  "keywords": [
+    "tplink",
+    "kasa",
+    "hs100",
+    "hs105",
+    "hs110",
+    "hs200",
+    "lb100",
+    "lb110",
+    "lb120",
+    "home",
+    "smartplug",
+    "smartswitch",
+    "smartbulb"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": ">=6.5.0"
+  },
+  "dependencies": {
+    "hs100-api": "~0.13.0",
+    "lodash.defaultsdeep": "^4.6.0",
+    "loglevel": "^1.5.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-things": "^0.2.0",
+    "mocha": "^3.5.3",
+    "nyc": "^11.2.1",
+    "semistandard": "^11.0.0"
+  }
+}
