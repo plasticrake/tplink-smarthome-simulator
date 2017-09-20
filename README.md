@@ -1,4 +1,8 @@
+
 # tplink-smarthome-simulator
+[![NPM Version](https://img.shields.io/npm/v/tplink-smarthome-simulator.svg)](https://www.npmjs.com/package/tplink-smarthome-simulator)
+[![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
+
 TP-Link Smarthome Device Simulator
 
 
