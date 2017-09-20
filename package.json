@@ -29,7 +29,10 @@
   ],
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha"
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags",
+    "test": "semistandard && nyc mocha",
+    "coverage": "nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov"
   },
   "engines": {
     "node": ">=6.5.0"
@@ -44,6 +47,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-things": "^0.2.0",
+    "codecov": "^2.3.0",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1",
     "semistandard": "^11.0.0"
