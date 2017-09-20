@@ -5,6 +5,7 @@
 
 TP-Link Smarthome Device Simulator
 
+![Kasa Screenshot](https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png)
 
 ```javascript
 'use strict';
