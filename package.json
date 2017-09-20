@@ -37,6 +37,7 @@
   "dependencies": {
     "hs100-api": "~0.13.0",
     "lodash.defaultsdeep": "^4.6.0",
+    "lodash.merge": "^4.6.0",
     "loglevel": "^1.5.0"
   },
   "devDependencies": {
