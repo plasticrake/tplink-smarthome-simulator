@@ -10,12 +10,12 @@ const UdpServer = require('..').UdpServer;
 
 describe('UdpServer', function () {
   before(function () {
-    UdpServer.log.disableAll();
+    UdpServer.logger.disableAll();
   });
 
-  describe('.log', function () {
-    it('has log', function () {
-      expect(UdpServer.log).to.exist;
+  describe('.logger', function () {
+    it('has logger', function () {
+      expect(UdpServer.logger).to.exist;
     });
   });
   describe('.start()', function () {
