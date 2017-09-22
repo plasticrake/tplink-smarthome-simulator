@@ -13,6 +13,18 @@ TP-Link Smarthome Device Simulator
 
 See [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples)
 
+[`debug`](https://github.com/visionmedia/debug) is used for output. To see all messages set the DEBUG environment variable.
+To see everything:
+```
+DEBUG=* node examples/multi-device.js
+```
+
+To see most:
+```
+DEBUG=*,-device:udp,*:error node examples/multi-device.js
+```
+
+
 ```javascript
 'use strict';
 
