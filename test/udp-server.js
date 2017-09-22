@@ -9,15 +9,6 @@ const expect = chai.expect;
 const UdpServer = require('..').UdpServer;
 
 describe('UdpServer', function () {
-  before(function () {
-    UdpServer.logger.disableAll();
-  });
-
-  describe('.logger', function () {
-    it('has logger', function () {
-      expect(UdpServer.logger).to.exist;
-    });
-  });
   describe('.start()', function () {
     it('defaults', function () {
       return UdpServer.start().then(() => {

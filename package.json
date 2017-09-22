@@ -38,11 +38,10 @@
     "node": ">=6.5.0"
   },
   "dependencies": {
+    "debug": "^3.0.1",
     "hs100-api": "~0.14.0",
     "lodash.defaultsdeep": "^4.6.0",
-    "lodash.merge": "^4.6.0",
-    "loglevel": "^1.5.0",
-    "loglevel-plugin-prefix": "^0.5.3"
+    "lodash.merge": "^4.6.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
