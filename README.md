@@ -5,9 +5,13 @@
 [![codecov](https://codecov.io/gh/plasticrake/tplink-smarthome-simulator/branch/master/graph/badge.svg)](https://codecov.io/gh/plasticrake/tplink-smarthome-simulator)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
+<img src="https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png" align="right" alt="Kasa Screenshot" width=250>
+
+
+
 TP-Link Smarthome Device Simulator
 
-![Kasa Screenshot](https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png)
+See [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples)
 
 ```javascript
 'use strict';
