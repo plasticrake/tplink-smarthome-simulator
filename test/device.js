@@ -16,14 +16,14 @@ describe('Device', function () {
       expect(device).to.have.property('model', opt.model);
       expect(device).to.have.property('port', opt.port);
       expect(device).to.have.property('address', opt.address);
-      expect(device).to.have.property('data', opt.data);
+      expect(device).to.have.nested.property('data.deviceId', opt.data.deviceId);
       expect(device.api).to.exist;
     });
     it('defaults', function () {
       let device = new Device({model: 'hs100'});
       expect(device).to.have.property('port', 0);
       expect(device).to.have.property('address', '0.0.0.0');
-      expect(device).to.have.property('data', undefined);
+      expect(device).to.have.deep.property('data', {model: 'hs100'});
       expect(device.api).to.exist;
     });
     it('throw if no model', function () {
@@ -34,12 +34,53 @@ describe('Device', function () {
     });
 
     Device.models.forEach((model) => {
+      let device;
+      beforeEach(function () {
+        device = new Device({model});
+      });
       describe(model, function () {
         it('has api', function () {
-          let device = new Device({model});
           expect(device.api).to.exist;
         });
       });
+    });
+  });
+
+  let device;
+  beforeEach(function () {
+    device = new Device({model: 'hs100'});
+  });
+
+  describe('#start()', function () {
+    before(function () {
+      this.timeout = 5000;
+    });
+
+    it('should open server / sockets', async function () {
+      await device.start();
+      expect(device.udpSocketBound).to.be.true;
+      expect(device.serverBound).to.be.true;
+      return device.stop();
+    });
+  });
+
+  describe('#stop()', function () {
+    before(function () {
+      this.timeout = 5000;
+    });
+    it('should close server / sockets', async function () {
+      await device.start();
+      await device.stop();
+      expect(device.udpSocketBound).to.be.false;
+      expect(device.serverBound).to.be.false;
+    });
+    it('does nothing when stopped twice', async function () {
+      await device.start();
+      await device.stop();
+      return device.stop();
+    });
+    it('does nothing if not started', async function () {
+      return device.stop();
     });
   });
 });
