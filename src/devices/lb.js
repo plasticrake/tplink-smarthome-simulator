@@ -74,7 +74,7 @@ class Lb {
         let ls = this.data.system.sysinfo.light_state;
 
         Object.entries(options).forEach(([k, v]) => {
-          if (['mode', 'hue', 'on_off', 'saturation', 'color_temp', 'brightness'].includes(k)) {
+          if (['mode', 'hue', 'on_off', 'saturation', 'color_temp', 'brightness'].indexOf(k) !== -1) {
             Object.assign(ls, {[k]: v});
           }
         });
