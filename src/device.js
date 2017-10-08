@@ -150,7 +150,7 @@ class Device extends EventEmitter {
 
 Device.models = ['hs100', 'hs105', 'hs110', 'hs200', 'lb100', 'lb120', 'lb130'];
 
-const processCommand = function (command, api) {
+const processCommand = function (command, api, depth = 0) {
   let results = {};
   let keys = Object.keys(command);
   for (var i = 0; i < keys.length; i++) {
@@ -158,7 +158,13 @@ const processCommand = function (command, api) {
     if (typeof api[key] === 'function') {
       results[key] = api[key](command[key]);
     } else if (api[key]) {
-      results[key] = processCommand(command[key], api[key]);
+      results[key] = processCommand(command[key], api[key], depth + 1);
+    } else {
+      if (depth === 0) {
+        results[key] = {err_code: -1, err_msg: 'module not support'};
+      } else {
+        results[key] = {err_code: -2, err_msg: 'member not support'};
+      }
     }
   }
   return results;
