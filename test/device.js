@@ -6,7 +6,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const Device = require('..').Device;
+const Device = require('../src').Device;
 const processCommand = require('../src/device').processCommand;
 
 describe('Device', function () {

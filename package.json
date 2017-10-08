@@ -31,8 +31,8 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
-    "test": "semistandard && nyc mocha",
-    "coverage": "nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
+    "test": "semistandard && cross-env NODE_ENV=test nyc mocha",
+    "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
     "build": "./node_modules/.bin/babel src -d lib",
     "prepare": "npm run build"
   },
@@ -47,11 +47,13 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "chai": "^4.1.2",
     "chai-things": "^0.2.0",
     "codecov": "^2.3.0",
+    "cross-env": "^5.0.5",
     "mocha": "^4.0.0",
     "nyc": "^11.2.1",
     "semistandard": "^11.0.0"
