@@ -28,6 +28,9 @@
     "smartbulb"
   ],
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
