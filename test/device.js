@@ -7,6 +7,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const Device = require('..').Device;
+const processCommand = require('../src/device').processCommand;
 
 describe('Device', function () {
   describe('constructor()', function () {
@@ -42,6 +43,33 @@ describe('Device', function () {
         it('has api', function () {
           expect(device.api).to.exist;
         });
+      });
+    });
+  });
+
+  describe('private', function () {
+    let api;
+    before(function () {
+      api = {
+        system: {
+          get_sysinfo: () => {
+            return { alias: 'test' };
+          }
+        }
+      };
+    });
+    describe('processCommand', function () {
+      it('should get command results', function () {
+        let results = processCommand({system: {get_sysinfo: {}}}, api);
+        expect(results).to.eql({system: {get_sysinfo: api.system.get_sysinfo()}});
+      });
+      it('should result in err_code -1 with invalid module', function () {
+        let results = processCommand({system_invalid: {get_sysinfo: {}}}, api);
+        expect(results).to.eql({system_invalid: {err_code: -1, err_msg: 'module not support'}});
+      });
+      it('should result in err_code -2 with invalid member', function () {
+        let results = processCommand({system: {get_sysinfo_invalid: {}}}, api);
+        expect(results).to.eql({system: {get_sysinfo_invalid: {err_code: -2, err_msg: 'member not support'}}});
       });
     });
   });
