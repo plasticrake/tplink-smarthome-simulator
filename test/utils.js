@@ -7,7 +7,7 @@ const chai = require('chai');
 chai.use(require('chai-things'));
 const expect = chai.expect;
 
-const utils = require('../lib/utils');
+const utils = require('../src/utils');
 
 describe('utils', function () {
   describe('.getDayList()', function () {

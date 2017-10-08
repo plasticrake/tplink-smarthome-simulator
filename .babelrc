@@ -3,8 +3,14 @@
     ["env", {
       "targets": {
         "node": "4.8"
-      }
+      },
+      exclude: ["transform-es2015-classes"]
     }]
   ],
+  "env": {
+    "test": {
+      "plugins": [ "istanbul" ]
+    }
+  },
   "plugins": ["transform-runtime"]
 }

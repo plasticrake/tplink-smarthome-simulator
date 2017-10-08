@@ -6,7 +6,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const UdpServer = require('..').UdpServer;
+const UdpServer = require('../src').UdpServer;
 
 describe('UdpServer', function () {
   describe('.start()', function () {
