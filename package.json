@@ -40,7 +40,8 @@
     "prepare": "npm run build"
   },
   "engines": {
-    "node": ">=6.5.0"
+    "node": ">=6.5.0",
+    "npm" : ">=3"
   },
   "dependencies": {
     "debug": "^3.1.0",
