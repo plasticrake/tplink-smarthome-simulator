@@ -4,7 +4,7 @@ const EventEmitter = require('events');
 const dgram = require('dgram');
 const net = require('net');
 const debug = require('debug');
-const utils = require('hs100-api').utils;
+const TplinkCrypto = require('hs100-api').TplinkCrypto;
 
 const UdpServer = require('./udp-server');
 
@@ -97,7 +97,7 @@ class Device extends EventEmitter {
   }
 
   processUdpMessage (msg, rinfo) {
-    let decryptedMsg = utils.decrypt(msg).toString('ascii');
+    let decryptedMsg = TplinkCrypto.decrypt(msg).toString('ascii');
     logUdp('[%s] UDP receiving', this.model, rinfo.port, rinfo.address);
     this.emit('data', { time: Date.now(), protocol: 'udp', message: decryptedMsg, remoteAddress: rinfo.address, remortPort: rinfo.port });
     let msgObj;
@@ -113,7 +113,7 @@ class Device extends EventEmitter {
 
     if (responseObj) {
       let responseJson = JSON.stringify(responseObj);
-      let encryptedResponse = utils.encrypt(responseJson);
+      let encryptedResponse = TplinkCrypto.encrypt(responseJson);
       logUdp('[%s] UDP responding', this.model, rinfo.port, rinfo.address);
       logUdp(responseObj);
       this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, remoteAddress: rinfo.address, remortPort: rinfo.port });
@@ -123,7 +123,7 @@ class Device extends EventEmitter {
 
   processTcpMessage (msg, socket) {
     logTcp('[%s] TCP DATA', this.model, socket.remoteAddress, socket.remotePort);
-    let decryptedMsg = utils.decryptWithHeader(msg).toString('ascii');
+    let decryptedMsg = TplinkCrypto.decryptWithHeader(msg).toString('ascii');
     logTcp(decryptedMsg);
     this.emit('data', { time: Date.now(), protocol: 'tcp', message: decryptedMsg, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
     let msgObj;
@@ -139,7 +139,7 @@ class Device extends EventEmitter {
 
     if (responseObj) {
       let responseJson = JSON.stringify(responseObj);
-      let encryptedResponse = utils.encryptWithHeader(responseJson);
+      let encryptedResponse = TplinkCrypto.encryptWithHeader(responseJson);
       logTcp('[%s] TCP responding', this.model, socket.address());
       logTcp(responseObj);
       this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
