@@ -117,7 +117,7 @@ class Device extends EventEmitter {
       logUdp('[%s] UDP responding', this.model, rinfo.port, rinfo.address);
       logUdp(responseObj);
       this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, remoteAddress: rinfo.address, remortPort: rinfo.port });
-      this.udpSocket.send(encryptedResponse, rinfo.port, rinfo.address);
+      this.udpSocket.send(encryptedResponse, 0, encryptedResponse.length, rinfo.port, rinfo.address);
     }
   }
 
