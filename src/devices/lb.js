@@ -74,8 +74,21 @@ class Lb {
         let ls = this.data.system.sysinfo.light_state;
 
         Object.entries(options).forEach(([k, v]) => {
-          if (['mode', 'hue', 'on_off', 'saturation', 'color_temp', 'brightness'].indexOf(k) !== -1) {
-            Object.assign(ls, {[k]: v});
+          switch (k) {
+            case 'color_temp':
+              if ((v >= this.data.colorTempRange.min && v <= this.data.colorTempRange.max)) {
+                Object.assign(ls, {[k]: v});
+              } else {
+                throw { err_code: -10000, err_msg: 'Invalid input argument' }; // eslint-disable-line no-throw-literal
+              }
+              break;
+            case 'mode':
+            case 'hue':
+            case 'on_off':
+            case 'saturation':
+            case 'brightness':
+              Object.assign(ls, {[k]: v});
+              break;
           }
         });
 

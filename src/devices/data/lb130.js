@@ -5,6 +5,7 @@ const defaultsDeep = require('lodash.defaultsdeep');
 const lb100 = require('./lb100');
 
 const lb130 = {
+  colorTempRange: { min: 2500, max: 9000 },
   system: {
     sysinfo: {
       sw_ver: '1.5.5 Build 170623 Rel.090105',
