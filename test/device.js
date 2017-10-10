@@ -24,7 +24,7 @@ describe('Device', function () {
       let device = new Device({model: 'hs100'});
       expect(device).to.have.property('port', 0);
       expect(device).to.have.property('address', '0.0.0.0');
-      expect(device).to.have.deep.property('data', {model: 'hs100'});
+      expect(device).to.have.nested.property('data.model', 'hs100');
       expect(device.api).to.exist;
     });
     it('throw if no model', function () {
