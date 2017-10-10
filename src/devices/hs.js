@@ -11,7 +11,7 @@ const defaultData = require('./data/base');
 class Hs {
   constructor (data = {}) {
     this.data = defaultsDeep(data, defaultData);
-    let si = data.system.sysinfo;
+    let si = this.data.system.sysinfo;
     if (data.alias) {
       si.alias = data.alias;
     } else {
@@ -24,7 +24,7 @@ class Hs {
       si.deviceId = data.deviceId;
     }
 
-    if (!si.mac && !si.mic_mac) { this.setMac(utils.randomMac()); }
+    if (!si.mac && !si.mic_mac && !si.ethernet_mac) { this.setMac(utils.randomMac()); }
     if (!si.deviceId) { si.deviceId = utils.generateId(40); }
     if (!si.hwId) { si.hwId = utils.generateId(32); }
     if (!si.fwId) { si.fwId = utils.generateId(32); }
@@ -238,6 +238,7 @@ class Hs {
   setMac (mac) {
     this.data.system.sysinfo.mac = mac;
     this.data.system.sysinfo.mic_mac = mac.replace(/[^A-Za-z0-9]/g, '');
+    this.data.system.ethernet_mac = mac;
   }
 }
 
