@@ -15,11 +15,12 @@ let logTcp = debug('device:tcp');
 let logTcpErr = debug('device:tcp:error');
 
 class Device extends EventEmitter {
-  constructor ({ model, port = 0, address = '0.0.0.0', alias, data = {} } = {}) {
+  constructor ({ model, port = 0, address = '0.0.0.0', alias, responseDelay = 0, data = {} } = {}) {
     super();
     this.model = model;
     this.port = port;
     this.address = address;
+    this.responseDelay = responseDelay;
     this.data = Object.assign({}, data);
     this.data.model = model;
     if (!alias == null) this.data.alias = alias;
@@ -28,8 +29,9 @@ class Device extends EventEmitter {
     this.udpSocketBound = false;
 
     let SpecificDevice = require(`./devices/${model}`);
-    let deviceInfo = new SpecificDevice(data);
+    let deviceInfo = new SpecificDevice(this.data);
     this.api = deviceInfo.api;
+    this.data = deviceInfo.data;
   }
 
   async start () {
@@ -114,10 +116,12 @@ class Device extends EventEmitter {
     if (responseObj) {
       let responseJson = JSON.stringify(responseObj);
       let encryptedResponse = TplinkCrypto.encrypt(responseJson);
-      logUdp('[%s] UDP responding', this.model, rinfo.port, rinfo.address);
-      logUdp(responseObj);
-      this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, remoteAddress: rinfo.address, remortPort: rinfo.port });
-      this.udpSocket.send(encryptedResponse, 0, encryptedResponse.length, rinfo.port, rinfo.address);
+      setTimeout(() => {
+        logUdp('[%s] UDP responding, delay:%s,', this.model, this.responseDelay, rinfo.port, rinfo.address);
+        logUdp(responseObj);
+        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, remoteAddress: rinfo.address, remortPort: rinfo.port });
+        this.udpSocket.send(encryptedResponse, 0, encryptedResponse.length, rinfo.port, rinfo.address);
+      }, this.responseDelay);
     }
   }
 
@@ -140,10 +144,12 @@ class Device extends EventEmitter {
     if (responseObj) {
       let responseJson = JSON.stringify(responseObj);
       let encryptedResponse = TplinkCrypto.encryptWithHeader(responseJson);
-      logTcp('[%s] TCP responding', this.model, socket.address());
-      logTcp(responseObj);
-      this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
-      socket.write(encryptedResponse);
+      setTimeout(() => {
+        logTcp('[%s] TCP responding, delay:%s,', this.model, this.responseDelay, socket.address());
+        logTcp(responseObj);
+        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseJson, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
+        socket.write(encryptedResponse);
+      }, this.responseDelay);
     }
   }
 }
