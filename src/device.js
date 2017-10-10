@@ -99,7 +99,7 @@ class Device extends EventEmitter {
   }
 
   processUdpMessage (msg, rinfo) {
-    let decryptedMsg = TplinkCrypto.decrypt(msg).toString('ascii');
+    let decryptedMsg = TplinkCrypto.decrypt(msg).toString('utf8');
     logUdp('[%s] UDP receiving', this.model, rinfo.port, rinfo.address);
     this.emit('data', { time: Date.now(), protocol: 'udp', message: decryptedMsg, remoteAddress: rinfo.address, remortPort: rinfo.port });
     let msgObj;
@@ -127,7 +127,7 @@ class Device extends EventEmitter {
 
   processTcpMessage (msg, socket) {
     logTcp('[%s] TCP DATA', this.model, socket.remoteAddress, socket.remotePort);
-    let decryptedMsg = TplinkCrypto.decryptWithHeader(msg).toString('ascii');
+    let decryptedMsg = TplinkCrypto.decryptWithHeader(msg).toString('utf8');
     logTcp(decryptedMsg);
     this.emit('data', { time: Date.now(), protocol: 'tcp', message: decryptedMsg, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
     let msgObj;
