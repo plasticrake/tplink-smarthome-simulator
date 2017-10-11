@@ -113,6 +113,7 @@ function editRule (rules, rule) {
   let existingRule = rules.find((r, i, a) => {
     if (r.id === rule.id) {
       a[i] = rule;
+      return a[i];
     }
   });
   if (existingRule == null) {
