@@ -1,6 +1,6 @@
 'use strict';
 
-const TplinkCrypto = require('hs100-api').TplinkCrypto;
+const { encrypt, encryptWithHeader } = require('tplink-smarthome-crypto');
 
 const { randomInt } = require('./utils');
 const DeviceNetworking = require('./device-networking');
@@ -56,11 +56,11 @@ class Device {
   }
 
   processUdpMessage (msgObj) {
-    return this.processMessage(msgObj, TplinkCrypto.encrypt);
+    return this.processMessage(msgObj, encrypt);
   }
 
   processTcpMessage (msgObj) {
-    return this.processMessage(msgObj, TplinkCrypto.encryptWithHeader);
+    return this.processMessage(msgObj, encryptWithHeader);
   }
 }
 
