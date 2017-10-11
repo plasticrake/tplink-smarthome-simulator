@@ -74,41 +74,44 @@ describe('Device', function () {
     });
   });
 
-  let device;
-  beforeEach(function () {
-    device = new Device({model: 'hs100'});
-  });
+  Device.models.forEach((model) => {
+    let device;
+    beforeEach(function () {
+      device = new Device({model});
+    });
+    describe(model, function () {
+      describe('#start()', function () {
+        before(function () {
+          this.timeout = 5000;
+        });
 
-  describe('#start()', function () {
-    before(function () {
-      this.timeout = 5000;
-    });
+        it('should open server / sockets', async function () {
+          await device.start();
+          expect(device.deviceNetworking.udpSocketBound).to.be.true;
+          expect(device.deviceNetworking.serverBound).to.be.true;
+          return device.stop();
+        });
+      });
 
-    it('should open server / sockets', async function () {
-      await device.start();
-      expect(device.udpSocketBound).to.be.true;
-      expect(device.serverBound).to.be.true;
-      return device.stop();
-    });
-  });
-
-  describe('#stop()', function () {
-    before(function () {
-      this.timeout = 5000;
-    });
-    it('should close server / sockets', async function () {
-      await device.start();
-      await device.stop();
-      expect(device.udpSocketBound).to.be.false;
-      expect(device.serverBound).to.be.false;
-    });
-    it('does nothing when stopped twice', async function () {
-      await device.start();
-      await device.stop();
-      return device.stop();
-    });
-    it('does nothing if not started', async function () {
-      return device.stop();
+      describe('#stop()', function () {
+        before(function () {
+          this.timeout = 5000;
+        });
+        it('should close server / sockets', async function () {
+          await device.start();
+          await device.stop();
+          expect(device.deviceNetworking.udpSocketBound).to.be.false;
+          expect(device.deviceNetworking.serverBound).to.be.false;
+        });
+        it('does nothing when stopped twice', async function () {
+          await device.start();
+          await device.stop();
+          return device.stop();
+        });
+        it('does nothing if not started', async function () {
+          return device.stop();
+        });
+      });
     });
   });
 });
