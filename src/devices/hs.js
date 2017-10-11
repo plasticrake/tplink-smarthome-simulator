@@ -166,6 +166,9 @@ class Hs {
           return this.data.count_down.rules;
         }),
         add_rule: errCode((rule) => {
+          if (this.data.count_down.rules.rule_list.length > 0) {
+            throw {err_code: -10, err_msg: 'table is full'}; // eslint-disable-line no-throw-literal
+          }
           rule.id = utils.generateId(32);
           this.data.count_down.rules.rule_list.push(rule);
           return {id: rule.id};
