@@ -154,7 +154,7 @@ class Hs {
         set_overall_enable: errCode(({enable}) => {
           this.data.anti_theft.rules.enable = enable;
         }),
-        d: errCode((rule) => {
+        edit_rule: errCode((rule) => {
           utils.editRule(this.data.anti_theft.rules.rule_list, rule);
         }),
         delete_rule: errCode(({id}) => {
