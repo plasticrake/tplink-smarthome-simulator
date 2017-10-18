@@ -98,7 +98,7 @@ class Hs {
           this.data.cnCloud.info.binded = 1;
         }),
         unbind: errCode(() => {
-          if (this.data.cnCloud.info.binded === 1) throw {'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet"};
+          if (this.data.cnCloud.info.binded === 0) throw {'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet"};
           this.data.cnCloud.info.username = '';
           this.data.cnCloud.info.binded = 0;
         }),
