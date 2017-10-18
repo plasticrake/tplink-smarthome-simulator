@@ -1,3 +1,4 @@
+/* eslint no-throw-literal: ["off"] */
 'use strict';
 
 const crypto = require('crypto');
@@ -108,7 +109,7 @@ function getMonthList (year, key, dayListData = [], defaultValue) {
 
 function editRule (rules, rule) {
   if (rule.id == null) {
-    throw { err_code: -3, err_msg: 'invalid argument' }; // eslint-disable-line no-throw-literal
+    throw { err_code: -3, err_msg: 'invalid argument' };
   }
   let existingRule = rules.find((r, i, a) => {
     if (r.id === rule.id) {
@@ -117,11 +118,12 @@ function editRule (rules, rule) {
     }
   });
   if (existingRule == null) {
-    throw { err_code: -14, err_msg: 'entry not exist' }; // eslint-disable-line no-throw-literal
+    throw { err_code: -14, err_msg: 'entry not exist' };
   }
 }
 
 function deleteRule (rules, id) {
+  if (!id) throw { 'err_code': -10002, 'err_msg': 'Missing neccesary argument' };
   let rule = rules.find((r, i, a) => {
     if (r.id === id) {
       a.splice(i, 1); // remove rule
@@ -129,7 +131,7 @@ function deleteRule (rules, id) {
     }
   });
   if (rule == null) {
-    throw { err_code: -14, err_msg: 'entry not exist' }; // eslint-disable-line no-throw-literal
+    throw { err_code: -14, err_msg: 'entry not exist' };
   }
 }
 

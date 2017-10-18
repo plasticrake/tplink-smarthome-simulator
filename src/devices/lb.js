@@ -56,6 +56,9 @@ class Lb {
       get_monthstat: errCode(({year} = {}) => {
         let month_list = utils.getMonthList(year, 'energy_wh', this.data.emeter.daystat.day_list, () => { return utils.randomInt(0, 30); });
         return {month_list};
+      }),
+      erase_emeter_stat: errCode(() => {
+        this.data.emeter.daystat.day_list = [];
       })
     };
 
@@ -76,7 +79,7 @@ class Lb {
         Object.entries(options).forEach(([k, v]) => {
           switch (k) {
             case 'color_temp':
-              if ((v >= this.data.colorTempRange.min && v <= this.data.colorTempRange.max)) {
+              if (v === 0 || (v >= this.data.colorTempRange.min && v <= this.data.colorTempRange.max)) {
                 Object.assign(ls, {[k]: v});
               } else {
                 throw { err_code: -10000, err_msg: 'Invalid input argument' }; // eslint-disable-line no-throw-literal

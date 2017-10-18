@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+/* eslint-disable no-throw-literal */
+
 'use strict';
 
 const defaultsDeep = require('lodash.defaultsdeep');
@@ -75,8 +77,8 @@ class Hs {
         reboot: errCode(({delay}) => { return {}; }),
         reset: errCode(({delay}) => { return {}; }),
         download_firmware: errCode(({url}) => { return {}; }),
-        get_download_state: errCode(({url}) => { throw { err_code: -7, err_msg: 'unknown error' }; }),  // eslint-disable-line no-throw-literal
-        flash_firmware: errCode(({url}) => { throw { err_code: -5, err_msg: 'not enough memory' }; }),  // eslint-disable-line no-throw-literal
+        get_download_state: errCode(({url}) => { throw { err_code: -7, err_msg: 'unknown error' }; }),
+        flash_firmware: errCode(({url}) => { throw { err_code: -5, err_msg: 'not enough memory' }; }),
         set_mac_addr: errCode(({mac}) => { this.setMac(mac); }),
         set_device_id: errCode(({deviceId}) => { this.data.system.sysinfo.deviceId = deviceId; }),
         set_hw_id: errCode(({hwId}) => { this.data.system.sysinfo.hwId = hwId; }),
@@ -96,6 +98,7 @@ class Hs {
           this.data.cnCloud.info.binded = 1;
         }),
         unbind: errCode(() => {
+          if (this.data.cnCloud.info.binded === 1) throw {'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet"};
           this.data.cnCloud.info.username = '';
           this.data.cnCloud.info.binded = 0;
         }),
@@ -115,7 +118,7 @@ class Hs {
           return {id: rule.id};
         }),
         set_overall_enable: errCode(({enable}) => {
-          this.data.schedule.rules.enabble = enable;
+          this.data.schedule.rules.enable = enable;
         }),
         edit_rule: errCode((rule) => {
           utils.editRule(this.data.schedule.rules.rule_list, rule);
@@ -149,9 +152,9 @@ class Hs {
           return {id: rule.id};
         }),
         set_overall_enable: errCode(({enable}) => {
-          this.data.anti_theft.rules.enabble = enable;
+          this.data.anti_theft.rules.enable = enable;
         }),
-        edit_rule: errCode((rule) => {
+        d: errCode((rule) => {
           utils.editRule(this.data.anti_theft.rules.rule_list, rule);
         }),
         delete_rule: errCode(({id}) => {
@@ -167,7 +170,7 @@ class Hs {
         }),
         add_rule: errCode((rule) => {
           if (this.data.count_down.rules.rule_list.length > 0) {
-            throw {err_code: -10, err_msg: 'table is full'}; // eslint-disable-line no-throw-literal
+            throw {err_code: -10, err_msg: 'table is full'};
           }
           rule.id = utils.generateId(32);
           this.data.count_down.rules.rule_list.push(rule);
