@@ -16,6 +16,7 @@ class Device {
 
     let SpecificDevice = require(`./devices/${model}`);
     let deviceInfo = new SpecificDevice(this.data);
+    deviceInfo.initDefaults();
     this.api = deviceInfo.api;
     this.data = deviceInfo.data;
 
