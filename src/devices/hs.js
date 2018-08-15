@@ -178,8 +178,8 @@ class Hs extends Base {
         return this.data.time.timezone;
       }),
       set_timezone: errCode(() => {
-          // TODO
-          // {"year":2016,"month":1,"mday":1,"hour":10,"min":10,"sec":10,"index":42}
+        // TODO
+        // {"year":2016,"month":1,"mday":1,"hour":10,"min":10,"sec":10,"index":42}
       })
     };
 

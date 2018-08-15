@@ -65,9 +65,9 @@ module.exports = {
   netif: {
     scaninfo: {
       ap_list: [
-           { ssid: 'wifi_network_1', key_type: 1 },
-           { ssid: 'wifi_network_2', key_type: 2 },
-           { ssid: 'wifi_network_3', key_type: 3 }
+        { ssid: 'wifi_network_1', key_type: 1 },
+        { ssid: 'wifi_network_2', key_type: 2 },
+        { ssid: 'wifi_network_3', key_type: 3 }
       ]
     }
   }
