@@ -26,12 +26,6 @@ module.exports = {
   },
 
   emeter: {
-    realtime: {
-      current: 0.1256,
-      voltage: 122.049119,
-      power: 3.14,
-      total: 51.493
-    },
     daystat: {
       day_list: []
     },

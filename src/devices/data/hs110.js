@@ -22,5 +22,14 @@ Object.assign(hs110, {
       rssi: -65,
       led_off: 0
     }
+  },
+
+  emeter: {
+    realtime: {
+      current: 0.1256,
+      voltage: 122.049119,
+      power: 3.14,
+      total: 51.493
+    }
   }
 });
