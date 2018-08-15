@@ -8,7 +8,7 @@ module.exports = hs100;
 Object.assign(hs100, {
   system: {
     sysinfo: {
-      sw_ver: '1.0.8 Build 151113 Rel.24658',
+      sw_ver: '1.2.5 Build 171129 Rel.174814',
       hw_ver: '1.0',
       type: 'IOT.SMARTPLUGSWITCH',
       model: 'HS100(US)',
