@@ -8,9 +8,9 @@
 <img src="https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png" align="right" alt="Kasa Screenshot" width=250>
 
 
-TP-Link Smarthome Device Simulator
+TP-Link Smart Home Device Simulator
 
-I created this so I could automate my tests for [hs100-api](https://github.com/plasticrake/hs100-api/).  [See where it's used.](https://github.com/plasticrake/hs100-api/blob/7460a9e2c01160b72c7bbe7b2e9623d457cf10c3/test/setup.js#L78)
+I created this so I could automate my tests for [tplink-smarthome-api](https://github.com/plasticrake/tplink-smarthome-api/).
 
 See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples).
 
@@ -51,7 +51,7 @@ devices.forEach((d) => {
 UdpServer.start();
 ```
 
-##TODO
+## TODO
 
 - [ ] Document API
 - [ ] Write tests
