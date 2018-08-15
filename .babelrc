@@ -2,7 +2,7 @@
   "presets": [
     ["env", {
       "targets": {
-        "node": "4.8"
+        "node": "6.4"
       },
       exclude: ["transform-es2015-classes"]
     }]
