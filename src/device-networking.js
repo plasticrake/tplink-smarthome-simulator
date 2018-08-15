@@ -96,13 +96,14 @@ class DeviceNetworking extends EventEmitter {
       // bind to UDP then TCP and share port
       this.udpSocket = dgram.createSocket({type: 'udp4', reuseAddr: true});
 
-      UdpServer.on('message', (msg, rinfo) => {
+      // Save to call removeListener on #stop()
+      this.udpCb = (msg, rinfo) => {
         this.processUdpMessage(msg, rinfo);
-      });
+      };
 
-      this.udpSocket.on('message', (msg, rinfo) => {
-        this.processUdpMessage(msg, rinfo);
-      });
+      UdpServer.on('message', this.udpCb);
+
+      this.udpSocket.on('message', this.udpCb);
 
       this.udpSocket.on('error', (exception) => {
         logUdpErr(exception);
@@ -128,6 +129,9 @@ class DeviceNetworking extends EventEmitter {
 
   async stop () {
     return new Promise((resolve, reject) => {
+      if (typeof this.udpCb === 'function') {
+        UdpServer.removeListener('message', this.udpCb);
+      }
       if (this.udpSocketBound) {
         this.udpSocket.close();
         this.udpSocketBound = false;
