@@ -9,7 +9,7 @@ function errCode (fn) {
     try {
       let ret = fn(...args);
       if (ret == null) { ret = {}; }
-      return Object.assign(ret, {err_code: 0});
+      return Object.assign(ret, { err_code: 0 });
     } catch (err) {
       let err_code = (err.err_code == null ? -1 : err.err_code); // eslint-disable-line camelcase
       let err_msg = (err.err_msg == null ? err : err.err_msg) + ''; // eslint-disable-line camelcase
@@ -56,11 +56,11 @@ function randomFloat (min, max) {
   return Math.random() * (max - min) + min;
 }
 
-function randomLatitude ({fixed = 4, min = -90, max = 90} = {}) {
+function randomLatitude ({ fixed = 4, min = -90, max = 90 } = {}) {
   return randomFloat(min, max).toFixed(fixed);
 }
 
-function randomLongitude ({fixed = 4, min = -180, max = 180} = {}) {
+function randomLongitude ({ fixed = 4, min = -180, max = 180 } = {}) {
   return randomFloat(min, max).toFixed(fixed);
 }
 

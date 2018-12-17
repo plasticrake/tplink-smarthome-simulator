@@ -10,12 +10,12 @@ UdpServer.setMaxListeners(25);
 const log = debug('udp-server');
 const logErr = debug('udp-server:error');
 
-UdpServer.start = function ({port = 9999} = {}) {
+UdpServer.start = function ({ port = 9999 } = {}) {
   const self = UdpServer;
   self.socketBound = false;
 
   return new Promise((resolve, reject) => {
-    self.socket = dgram.createSocket({type: 'udp4', reuseAddr: true});
+    self.socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
     self.socket.on('listening', () => {
       const address = self.socket.address();

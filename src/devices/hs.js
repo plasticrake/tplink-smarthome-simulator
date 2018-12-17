@@ -20,41 +20,41 @@ class Hs extends Base {
       get_sysinfo: errCode(() => {
         return this.sysinfo;
       }),
-      set_dev_alias: errCode(({alias}) => {
+      set_dev_alias: errCode(({ alias }) => {
         this.alias = alias;
       }),
-      set_relay_state: errCode(({state}) => {
+      set_relay_state: errCode(({ state }) => {
         this.relayState = state;
       }),
-      set_dev_location: errCode(({longitude_i, latitude_i, latitude, longitude}) => {
+      set_dev_location: errCode(({ longitude_i, latitude_i, latitude, longitude }) => {
         this.data.system.sysinfo.latitude = latitude;
         this.data.system.sysinfo.longitude = longitude;
         this.data.system.sysinfo.latitude_i = latitude_i;
         this.data.system.sysinfo.longitude_i = longitude_i;
       }),
-      set_led_off: errCode(({off}) => {
+      set_led_off: errCode(({ off }) => {
         this.data.system.sysinfo.led_off = off;
       }),
-      reboot: errCode(({delay}) => {
+      reboot: errCode(({ delay }) => {
         if (!Number.isInteger(delay)) {
           throw { err_code: -3, err_msg: 'invalid argument' };
         }
         return {};
       }),
-      reset: errCode(({delay}) => {
+      reset: errCode(({ delay }) => {
         if (!Number.isInteger(delay)) {
           throw { err_code: -3, err_msg: 'invalid argument' };
         }
         return {};
       }),
-      download_firmware: errCode(({url}) => { return {}; }),
-      get_download_state: errCode(({url}) => { throw { err_code: -7, err_msg: 'unknown error' }; }),
-      flash_firmware: errCode(({url}) => { throw { err_code: -5, err_msg: 'not enough memory' }; }),
-      set_mac_addr: errCode(({mac}) => { this.mac = mac; }),
-      set_device_id: errCode(({deviceId}) => { this.deviceId = deviceId; }),
-      set_hw_id: errCode(({hwId}) => { this.hwId = hwId; }),
+      download_firmware: errCode(({ url }) => { return {}; }),
+      get_download_state: errCode(({ url }) => { throw { err_code: -7, err_msg: 'unknown error' }; }),
+      flash_firmware: errCode(({ url }) => { throw { err_code: -5, err_msg: 'not enough memory' }; }),
+      set_mac_addr: errCode(({ mac }) => { this.mac = mac; }),
+      set_device_id: errCode(({ deviceId }) => { this.deviceId = deviceId; }),
+      set_hw_id: errCode(({ hwId }) => { this.hwId = hwId; }),
       test_check_uboot: errCode(() => { return this.data.system.test_check_uboot; }),
-      set_test_mode: errCode(({enable}) => { return {}; }),
+      set_test_mode: errCode(({ enable }) => { return {}; }),
       get_dev_icon: errCode(() => { return this.data.system.dev_icon; }),
       set_dev_icon: errCode((data) => { this.data.system.dev_icon = data; })
     };
@@ -63,17 +63,17 @@ class Hs extends Base {
       get_info: errCode(() => {
         return this.data.cnCloud.info;
       }),
-      set_server_url: errCode(({server}) => { this.data.cnCloud.info.server = server; }),
-      bind: errCode(({username, password}) => {
+      set_server_url: errCode(({ server }) => { this.data.cnCloud.info.server = server; }),
+      bind: errCode(({ username, password }) => {
         this.data.cnCloud.info.username = username;
         this.data.cnCloud.info.binded = 1;
       }),
       unbind: errCode(() => {
-        if (this.data.cnCloud.info.binded === 0) throw {'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet"};
+        if (this.data.cnCloud.info.binded === 0) throw { 'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet" };
         this.data.cnCloud.info.username = '';
         this.data.cnCloud.info.binded = 0;
       }),
-      get_intl_fw_list: errCode(() => { return {fw_list: []}; })
+      get_intl_fw_list: errCode(() => { return { fw_list: [] }; })
     };
 
     this.api.schedule = {
@@ -86,27 +86,27 @@ class Hs extends Base {
       add_rule: errCode((rule) => {
         rule.id = utils.generateId(32);
         this.scheduleContext.rules.rule_list.push(rule);
-        return {id: rule.id};
+        return { id: rule.id };
       }),
-      set_overall_enable: errCode(({enable}) => {
+      set_overall_enable: errCode(({ enable }) => {
         this.scheduleContext.rules.enable = enable;
       }),
       edit_rule: errCode((rule) => {
         utils.editRule(this.scheduleContext.rules.rule_list, rule);
       }),
-      delete_rule: errCode(({id}) => {
+      delete_rule: errCode(({ id }) => {
         utils.deleteRule(this.scheduleContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
         this.scheduleContext.rules.rule_list = [];
       }),
-      get_daystat: errCode(({year, month}) => {
+      get_daystat: errCode(({ year, month }) => {
         let day_list = utils.getDayList(year, month, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
-        return {day_list};
+        return { day_list };
       }),
-      get_monthstat: errCode(({year}) => {
+      get_monthstat: errCode(({ year }) => {
         let month_list = utils.getMonthList(year, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
-        return {month_list};
+        return { month_list };
       }),
       erase_runtime_stat: errCode(() => {
         this.scheduleContext.daystat.day_list = [];
@@ -120,15 +120,15 @@ class Hs extends Base {
       add_rule: errCode((rule) => {
         rule.id = utils.generateId(32);
         this.antiTheftContext.rules.rule_list.push(rule);
-        return {id: rule.id};
+        return { id: rule.id };
       }),
-      set_overall_enable: errCode(({enable}) => {
+      set_overall_enable: errCode(({ enable }) => {
         this.antiTheftContext.rules.enable = enable;
       }),
       edit_rule: errCode((rule) => {
         utils.editRule(this.antiTheftContext.rules.rule_list, rule);
       }),
-      delete_rule: errCode(({id}) => {
+      delete_rule: errCode(({ id }) => {
         utils.deleteRule(this.antiTheftContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
@@ -142,16 +142,16 @@ class Hs extends Base {
       }),
       add_rule: errCode((rule) => {
         if (this.countDownContext.rules.rule_list.length > 0) {
-          throw {err_code: -10, err_msg: 'table is full'};
+          throw { err_code: -10, err_msg: 'table is full' };
         }
         rule.id = utils.generateId(32);
         this.countDownContext.rules.rule_list.push(rule);
-        return {id: rule.id};
+        return { id: rule.id };
       }),
       edit_rule: errCode((rule) => {
         utils.editRule(this.countDownContext.rules.rule_list, rule);
       }),
-      delete_rule: errCode(({id}) => {
+      delete_rule: errCode(({ id }) => {
         utils.deleteRule(this.countDownContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
@@ -182,10 +182,10 @@ class Hs extends Base {
     };
 
     this.api.netif = {
-      get_scaninfo: errCode(({refresh, timeout}) => {
+      get_scaninfo: errCode(({ refresh, timeout }) => {
         return this.data.netif.scaninfo;
       }),
-      set_stainfo: errCode(({ssid, password, key_type}) => { return {}; })
+      set_stainfo: errCode(({ ssid, password, key_type }) => { return {}; })
     };
 
     this.api.emeter = {
@@ -201,7 +201,7 @@ class Hs extends Base {
         }
         return this.emeterContext.realtime;
       }),
-      get_daystat: errCode(({year, month} = {}) => {
+      get_daystat: errCode(({ year, month } = {}) => {
         let key;
         let defaultValue;
         if (this.realtimeV2) {
@@ -214,7 +214,7 @@ class Hs extends Base {
         const day_list = utils.getDayList(year, month, key, this.emeterContext.daystat.day_list, defaultValue);
         return { day_list };
       }),
-      get_monthstat: errCode(({year} = {}) => {
+      get_monthstat: errCode(({ year } = {}) => {
         let key;
         let defaultValue;
         if (this.realtimeV2) {
@@ -233,11 +233,11 @@ class Hs extends Base {
       get_vgain_igain: errCode(() => {
         return this.emeterContext.get_vgain_igain;
       }),
-      set_vgain_igain: errCode(({vgain, igain}) => {
+      set_vgain_igain: errCode(({ vgain, igain }) => {
         this.emeterContext.get_vgain_igain.vgain = vgain;
         this.emeterContext.get_vgain_igain.igain = igain;
       }),
-      start_calibration: errCode(({vtarget, itarget}) => {
+      start_calibration: errCode(({ vtarget, itarget }) => {
         return {};
       })
     };

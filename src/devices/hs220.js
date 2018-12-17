@@ -20,11 +20,11 @@ class Hs220 extends Hs200 {
     this.api['smartlife.iot.dimmer'] = {
       set_switch_state: this.api.system.set_relay_state,
 
-      set_brightness: errCode(({brightness}) => {
+      set_brightness: errCode(({ brightness }) => {
         this.data.system.sysinfo.brightness = brightness;
       }),
 
-      set_dimmer_transition: errCode(({brightness, mode, duration}) => {
+      set_dimmer_transition: errCode(({ brightness, mode, duration }) => {
         this.data.system.sysinfo.brightness = brightness;
       }),
 

@@ -7,7 +7,7 @@ const DeviceNetworking = require('./device-networking');
 
 class Device {
   constructor ({ model, port = 0, address = '0.0.0.0', alias, responseDelay = 0, unreliablePercent = 0, data = {} } = {}) {
-    this.deviceNetworking = new DeviceNetworking({device: this, model, port, address, responseDelay});
+    this.deviceNetworking = new DeviceNetworking({ device: this, model, port, address, responseDelay });
 
     this.model = model;
     this.data = Object.assign({}, data);
@@ -117,9 +117,9 @@ const processCommand = function (command, api, depth = 0) {
       results[key] = processCommand(command[key], api[key], depth + 1);
     } else {
       if (depth === 0) {
-        results[key] = {err_code: -1, err_msg: 'module not support'};
+        results[key] = { err_code: -1, err_msg: 'module not support' };
       } else {
-        results[key] = {err_code: -2, err_msg: 'member not support'};
+        results[key] = { err_code: -2, err_msg: 'member not support' };
       }
     }
   }

@@ -39,7 +39,7 @@ class Lb {
 
     this.api['smartlife.iot.common.timesetting'] = this.hs.api.time;
 
-    this.api['smartlife.iot.common.timesetting'].set_time = errCode(({year, month, mday, hour, min, sec}) => {
+    this.api['smartlife.iot.common.timesetting'].set_time = errCode(({ year, month, mday, hour, min, sec }) => {
       // TODO
     });
 
@@ -72,7 +72,7 @@ class Lb {
           switch (k) {
             case 'color_temp':
               if (v === 0 || (v >= this.data.colorTempRange.min && v <= this.data.colorTempRange.max)) {
-                Object.assign(ls, {[k]: v});
+                Object.assign(ls, { [k]: v });
               } else {
                 throw { err_code: -10000, err_msg: 'Invalid input argument' }; // eslint-disable-line no-throw-literal
               }
@@ -82,7 +82,7 @@ class Lb {
             case 'on_off':
             case 'saturation':
             case 'brightness':
-              Object.assign(ls, {[k]: v});
+              Object.assign(ls, { [k]: v });
               break;
           }
         });

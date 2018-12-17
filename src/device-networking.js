@@ -41,7 +41,7 @@ class DeviceNetworking extends EventEmitter {
     }
     logUdp(msgObj);
 
-    let {response, responseForLog} = this.device.processUdpMessage(msgObj);
+    let { response, responseForLog } = this.device.processUdpMessage(msgObj);
 
     if (response !== undefined) {
       setTimeout(() => {
@@ -67,7 +67,7 @@ class DeviceNetworking extends EventEmitter {
       throw err;
     }
 
-    let {response, responseForLog} = this.device.processTcpMessage(msgObj);
+    let { response, responseForLog } = this.device.processTcpMessage(msgObj);
 
     if (response !== undefined) {
       setTimeout(() => {
@@ -94,7 +94,7 @@ class DeviceNetworking extends EventEmitter {
       });
 
       // bind to UDP then TCP and share port
-      this.udpSocket = dgram.createSocket({type: 'udp4', reuseAddr: true});
+      this.udpSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
       // Save to call removeListener on #stop()
       this.udpCb = (msg, rinfo) => {
@@ -115,7 +115,7 @@ class DeviceNetworking extends EventEmitter {
         this.udpSocketBound = true;
         const udpAddress = this.udpSocket.address();
         log('[%s] UDP bound', this.model, udpAddress);
-        this.server.listen({port: udpAddress.port, host: this.address}, () => {
+        this.server.listen({ port: udpAddress.port, host: this.address }, () => {
           this.serverBound = true;
           const tcpAddress = this.server.address();
           this.address = tcpAddress.address;

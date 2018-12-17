@@ -26,10 +26,10 @@ class Base {
         })
       },
       netif: {
-        get_scaninfo: errCode(({refresh, timeout}) => {
+        get_scaninfo: errCode(({ refresh, timeout }) => {
           return this.data.netif.scaninfo;
         }),
-        set_stainfo: errCode(({ssid, password, key_type}) => { return {}; })
+        set_stainfo: errCode(({ ssid, password, key_type }) => { return {}; })
       },
       context: {
         child_ids: errCode(() => {

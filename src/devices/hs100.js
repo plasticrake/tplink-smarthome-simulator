@@ -17,7 +17,7 @@ class Hs100 extends Hs {
       get_realtime: errCode(() => {
         throw { err_code: -1, err_msg: 'module not support' }; // eslint-disable-line no-throw-literal
       }),
-      get_daystat: errCode(({year, month} = {}) => {
+      get_daystat: errCode(({ year, month } = {}) => {
         throw { err_code: -1, err_msg: 'module not support' }; // eslint-disable-line no-throw-literal
       })
     };
