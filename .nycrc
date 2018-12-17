@@ -4,5 +4,5 @@
   "all": true,
   "sourceMap": false,
   "instrument": false,
-  "temp-directory": "./coverage/.nyc_output"
+  "temp-dir": "./coverage/.nyc_output"
 }
