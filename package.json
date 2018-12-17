@@ -44,24 +44,27 @@
     "npm": ">=3"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "debug": "^3.1.0",
+    "@babel/runtime": "^7.2.0",
+    "debug": "^4.1.0",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.merge": "^4.6.1",
     "tplink-smarthome-crypto": "^1.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-istanbul": "^4.1.6",
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/node": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "chai-things": "^0.2.0",
-    "codecov": "^3.0.4",
+    "codecov": "^3.1.0",
     "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
-    "semistandard": "^12.0.1"
+    "nyc": "^13.1.0",
+    "semistandard": "^13.0.1"
   }
 }
