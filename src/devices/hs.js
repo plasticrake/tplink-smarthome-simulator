@@ -18,15 +18,13 @@ class Hs extends Base {
 
     this.api.system = {
       get_sysinfo: errCode(() => {
-        this.data.system.sysinfo.on_time = this.onTime;
-        return this.data.system.sysinfo;
+        return this.sysinfo;
       }),
       set_dev_alias: errCode(({alias}) => {
         this.alias = alias;
       }),
       set_relay_state: errCode(({state}) => {
-        this.data.system.sysinfo.relay_state = state;
-        this.onTime = new Date();
+        this.relayState = state;
       }),
       set_dev_location: errCode(({longitude_i, latitude_i, latitude, longitude}) => {
         this.data.system.sysinfo.latitude = latitude;
@@ -80,84 +78,84 @@ class Hs extends Base {
 
     this.api.schedule = {
       get_next_action: errCode(() => {
-        return this.data.schedule.next_action;
+        return this.scheduleContext.next_action;
       }),
       get_rules: errCode(() => {
-        return this.data.schedule.rules;
+        return this.scheduleContext.rules;
       }),
       add_rule: errCode((rule) => {
         rule.id = utils.generateId(32);
-        this.data.schedule.rules.rule_list.push(rule);
+        this.scheduleContext.rules.rule_list.push(rule);
         return {id: rule.id};
       }),
       set_overall_enable: errCode(({enable}) => {
-        this.data.schedule.rules.enable = enable;
+        this.scheduleContext.rules.enable = enable;
       }),
       edit_rule: errCode((rule) => {
-        utils.editRule(this.data.schedule.rules.rule_list, rule);
+        utils.editRule(this.scheduleContext.rules.rule_list, rule);
       }),
       delete_rule: errCode(({id}) => {
-        utils.deleteRule(this.data.schedule.rules.rule_list, id);
+        utils.deleteRule(this.scheduleContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
-        this.data.schedule.rules.rule_list = [];
+        this.scheduleContext.rules.rule_list = [];
       }),
       get_daystat: errCode(({year, month}) => {
-        let day_list = utils.getDayList(year, month, 'time', this.data.schedule.daystat.day_list, () => { return utils.randomInt(0, 1440); });
+        let day_list = utils.getDayList(year, month, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
         return {day_list};
       }),
       get_monthstat: errCode(({year}) => {
-        let month_list = utils.getMonthList(year, 'time', this.data.schedule.daystat.day_list, () => { return utils.randomInt(0, 1440); });
+        let month_list = utils.getMonthList(year, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
         return {month_list};
       }),
       erase_runtime_stat: errCode(() => {
-        this.data.schedule.daystat.day_list = [];
+        this.scheduleContext.daystat.day_list = [];
       })
     };
 
     this.api.anti_theft = {
       get_rules: errCode(() => {
-        return this.data.anti_theft.rules;
+        return this.antiTheftContext.rules;
       }),
       add_rule: errCode((rule) => {
         rule.id = utils.generateId(32);
-        this.data.anti_theft.rules.rule_list.push(rule);
+        this.antiTheftContext.rules.rule_list.push(rule);
         return {id: rule.id};
       }),
       set_overall_enable: errCode(({enable}) => {
-        this.data.anti_theft.rules.enable = enable;
+        this.antiTheftContext.rules.enable = enable;
       }),
       edit_rule: errCode((rule) => {
-        utils.editRule(this.data.anti_theft.rules.rule_list, rule);
+        utils.editRule(this.antiTheftContext.rules.rule_list, rule);
       }),
       delete_rule: errCode(({id}) => {
-        utils.deleteRule(this.data.anti_theft.rules.rule_list, id);
+        utils.deleteRule(this.antiTheftContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
-        this.data.anti_theft.rules.rule_list = [];
+        this.antiTheftContext.rules.rule_list = [];
       })
     };
 
     this.api.count_down = {
       get_rules: errCode(() => {
-        return this.data.count_down.rules;
+        return this.countDownContext.rules;
       }),
       add_rule: errCode((rule) => {
-        if (this.data.count_down.rules.rule_list.length > 0) {
+        if (this.countDownContext.rules.rule_list.length > 0) {
           throw {err_code: -10, err_msg: 'table is full'};
         }
         rule.id = utils.generateId(32);
-        this.data.count_down.rules.rule_list.push(rule);
+        this.countDownContext.rules.rule_list.push(rule);
         return {id: rule.id};
       }),
       edit_rule: errCode((rule) => {
-        utils.editRule(this.data.count_down.rules.rule_list, rule);
+        utils.editRule(this.countDownContext.rules.rule_list, rule);
       }),
       delete_rule: errCode(({id}) => {
-        utils.deleteRule(this.data.count_down.rules.rule_list, id);
+        utils.deleteRule(this.countDownContext.rules.rule_list, id);
       }),
       delete_all_rules: errCode(() => {
-        this.data.count_down.rules.rule_list = [];
+        this.countDownContext.rules.rule_list = [];
       })
     };
 
@@ -192,25 +190,52 @@ class Hs extends Base {
 
     this.api.emeter = {
       get_realtime: errCode(() => {
-        return this.data.emeter.realtime;
+        if (this.realtimeV2) {
+          const rt = this.emeterContext.realtime;
+          return {
+            voltage_mv: Math.floor(rt.voltage * 1000),
+            current_ma: Math.floor(rt.current * 1000),
+            power_mw: Math.floor(rt.power * 1000),
+            total_wh: Math.floor(rt.total * 1000)
+          };
+        }
+        return this.emeterContext.realtime;
       }),
       get_daystat: errCode(({year, month} = {}) => {
-        let day_list = utils.getDayList(year, month, 'energy', this.data.emeter.daystat.day_list, () => { return utils.randomFloat(0, 30); });
-        return {day_list};
+        let key;
+        let defaultValue;
+        if (this.realtimeV2) {
+          key = 'energy_wh';
+          defaultValue = () => { return utils.randomFloat(0, 30); };
+        } else {
+          key = 'energy';
+          defaultValue = () => { return utils.randomInt(0, 30000); };
+        }
+        const day_list = utils.getDayList(year, month, key, this.emeterContext.daystat.day_list, defaultValue);
+        return { day_list };
       }),
       get_monthstat: errCode(({year} = {}) => {
-        let month_list = utils.getMonthList(year, 'energy', this.data.emeter.daystat.day_list, () => { return utils.randomFloat(0, 30); });
-        return {month_list};
+        let key;
+        let defaultValue;
+        if (this.realtimeV2) {
+          key = 'energy_wh';
+          defaultValue = () => { return utils.randomFloat(0, 30); };
+        } else {
+          key = 'energy';
+          defaultValue = () => { return utils.randomInt(0, 30000); };
+        }
+        const month_list = utils.getMonthList(year, key, this.emeterContext.daystat.day_list, defaultValue);
+        return { month_list };
       }),
       erase_emeter_stat: errCode(() => {
-        this.data.emeter.daystat.day_list = [];
+        this.emeterContext.daystat.day_list = [];
       }),
       get_vgain_igain: errCode(() => {
-        return this.data.emeter.get_vgain_igain;
+        return this.emeterContext.get_vgain_igain;
       }),
       set_vgain_igain: errCode(({vgain, igain}) => {
-        this.data.emeter.get_vgain_igain.vgain = vgain;
-        this.data.emeter.get_vgain_igain.igain = igain;
+        this.emeterContext.get_vgain_igain.vgain = vgain;
+        this.emeterContext.get_vgain_igain.igain = igain;
       }),
       start_calibration: errCode(({vtarget, itarget}) => {
         return {};
@@ -220,8 +245,30 @@ class Hs extends Base {
     this.onSince = new Date();
   }
 
+  get sysinfo () {
+    this.data.system.sysinfo.on_time = this.onTime;
+    return this.data.system.sysinfo;
+  }
+
+  get relayState () {
+    return this.data.system.sysinfo.relay_state;
+  }
+
+  set relayState (relayState) {
+    this.data.system.sysinfo.relay_state = relayState;
+    this.onTime = new Date();
+  }
+
+  get antiTheftContext () {
+    return this.data.anti_theft;
+  }
+
+  get countDownContext () {
+    return this.data.count_down;
+  }
+
   get onTime () {
-    if (this.data.system.sysinfo.relay_state === 1) {
+    if (this.relayState === 1) {
       return Math.round((Date.now() - this.onSince) / 1000); // in seconds
     } else {
       return 0;

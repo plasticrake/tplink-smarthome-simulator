@@ -47,19 +47,11 @@ class Lb {
 
     this.api['smartlife.iot.common.emeter'] = {
       get_realtime: errCode(() => {
-        return this.data.emeter.realtime;
+        return this.hs.emeterContext.realtime;
       }),
-      get_daystat: errCode(({year, month} = {}) => {
-        let day_list = utils.getDayList(year, month, 'energy_wh', this.data.emeter.daystat.day_list, () => { return utils.randomInt(0, 30); });
-        return {day_list};
-      }),
-      get_monthstat: errCode(({year} = {}) => {
-        let month_list = utils.getMonthList(year, 'energy_wh', this.data.emeter.daystat.day_list, () => { return utils.randomInt(0, 30); });
-        return {month_list};
-      }),
-      erase_emeter_stat: errCode(() => {
-        this.data.emeter.daystat.day_list = [];
-      })
+      get_daystat: this.hs.api.emeter.get_daystat,
+      get_monthstat: this.hs.api.emeter.get_monthstat,
+      erase_emeter_stat: this.hs.api.emeter.erase_emeter_stat
     };
 
     this.api['smartlife.iot.smartbulb.lightingservice'] = {

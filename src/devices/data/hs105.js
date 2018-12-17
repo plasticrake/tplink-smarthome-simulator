@@ -1,8 +1,8 @@
 'use strict';
 
-const base = require('./base');
+const hs = require('./hs');
 
-const hs105 = Object.assign({}, base);
+const hs105 = Object.assign({}, hs);
 module.exports = hs105;
 
 Object.assign(hs105, {

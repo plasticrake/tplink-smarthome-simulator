@@ -26,12 +26,6 @@ module.exports = {
   },
 
   emeter: {
-    daystat: {
-      day_list: []
-    },
-    get_vgain_igain: {
-      vgain: 13255, igain: 16489
-    }
   },
 
   schedule: {
@@ -69,6 +63,10 @@ module.exports = {
         { ssid: 'wifi_network_2', key_type: 2 },
         { ssid: 'wifi_network_3', key_type: 3 }
       ]
+    },
+    stainfo: {
+      ssid: 'wifi_network_1',
+      key_type: 1
     }
   }
 

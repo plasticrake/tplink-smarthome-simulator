@@ -30,14 +30,34 @@ class Base {
           return this.data.netif.scaninfo;
         }),
         set_stainfo: errCode(({ssid, password, key_type}) => { return {}; })
+      },
+      context: {
+        child_ids: errCode(() => {
+          // noop
+        })
       }
     };
   }
 
+  get emeterContext () {
+    return this.data.emeter;
+  }
+
+  get scheduleContext () {
+    return this.data.schedule;
+  }
+
   get alias () {
+    if (this.currentContext) {
+      return this.currentContext.sysinfo.alias;
+    }
     return this.data.system.sysinfo.alias;
   }
   set alias (value) {
+    if (this.currentContext) {
+      this.currentContext.sysinfo.alias = value;
+      return;
+    }
     this.data.system.sysinfo.alias = value;
   }
 

@@ -15,10 +15,10 @@ class Device {
     if (!alias == null) this.data.alias = alias;
 
     let SpecificDevice = require(`./devices/${model}`);
-    let deviceInfo = new SpecificDevice(this.data);
-    deviceInfo.initDefaults();
-    this.api = deviceInfo.api;
-    this.data = deviceInfo.data;
+    this._deviceInfo = new SpecificDevice(this.data);
+    this._deviceInfo.initDefaults();
+    this.api = this._deviceInfo.api;
+    this.data = this._deviceInfo.data;
 
     this.unreliablePercent = unreliablePercent;
   }
@@ -39,7 +39,11 @@ class Device {
     return this.deviceNetworking.stop();
   }
 
-  processMessage (msgObj, encryptFn) {
+  get children () {
+    return this._deviceInfo.children;
+  }
+
+  processMessage (msgObj, encryptFn, customizerFn) {
     let responseObj = processCommand(msgObj, this.api);
     let responseJson;
     let response;
@@ -49,7 +53,10 @@ class Device {
       responseJson = badData;
       response = badData;
     } else if (responseObj) {
-      responseJson = JSON.stringify(responseObj);
+      if (customizerFn == null) {
+        customizerFn = (obj) => { return obj; };
+      }
+      responseJson = JSON.stringify(customizerFn(responseObj));
       response = encryptFn(responseJson);
     }
 
@@ -57,7 +64,16 @@ class Device {
   }
 
   processUdpMessage (msgObj) {
-    return this.processMessage(msgObj, encrypt);
+    return this.processMessage(msgObj, encrypt, (obj) => {
+      // UDP only returns last two characters of child.id
+      if (obj.system && obj.system.get_sysinfo && obj.system.get_sysinfo.children && obj.system.get_sysinfo.children.length > 0) {
+        obj.system.get_sysinfo.children.map((child) => {
+          child.id = child.id.slice(-2);
+          return child;
+        });
+      }
+      return obj;
+    });
   }
 
   processTcpMessage (msgObj) {
@@ -65,7 +81,7 @@ class Device {
   }
 }
 
-Device.models = ['hs100', 'hs105', 'hs110', 'hs200', 'lb100', 'lb120', 'lb130'];
+Device.models = ['hs100', 'hs105', 'hs110', 'hs110v2', 'hs200', 'hs220', 'hs300', 'lb100', 'lb120', 'lb130'];
 
 const unreliableData = function (unreliablePercent) {
   if (unreliablePercent > 0 && Math.random() < unreliablePercent) {
@@ -81,8 +97,20 @@ const unreliableData = function (unreliablePercent) {
 const processCommand = function (command, api, depth = 0) {
   let results = {};
   let keys = Object.keys(command);
+
+  // if includes context, call it first so rest of commands will have context set
+  if (depth === 0 && command.context && command.context.child_ids) {
+    let contextResults = api.context.child_ids(command.context.child_ids);
+    if (contextResults.err_code !== 0) {
+      results['context'] = contextResults;
+    }
+  }
+
   for (var i = 0; i < keys.length; i++) {
     let key = keys[i];
+    if (key === 'context') {
+      continue; // already processed above
+    }
     if (typeof api[key] === 'function') {
       results[key] = api[key](command[key]);
     } else if (api[key]) {

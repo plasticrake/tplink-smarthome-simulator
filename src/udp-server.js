@@ -5,12 +5,13 @@ const dgram = require('dgram');
 const debug = require('debug');
 
 const UdpServer = new EventEmitter();
+UdpServer.setMaxListeners(25);
 
-let log = debug('udp-server');
-let logErr = debug('udp-server:error');
+const log = debug('udp-server');
+const logErr = debug('udp-server:error');
 
 UdpServer.start = function ({port = 9999} = {}) {
-  let self = UdpServer;
+  const self = UdpServer;
   self.socketBound = false;
 
   return new Promise((resolve, reject) => {
@@ -39,7 +40,7 @@ UdpServer.start = function ({port = 9999} = {}) {
 };
 
 UdpServer.stop = function () {
-  let self = UdpServer;
+  const self = UdpServer;
   if (self.socketBound) {
     self.socket.close();
     self.socketBound = false;

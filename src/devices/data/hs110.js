@@ -1,8 +1,8 @@
 'use strict';
 
-const base = require('./base');
+const hs = require('./hs');
 
-const hs110 = Object.assign({}, base);
+const hs110 = Object.assign({}, hs);
 module.exports = hs110;
 
 Object.assign(hs110, {
@@ -21,15 +21,6 @@ Object.assign(hs110, {
       updating: 0,
       rssi: -65,
       led_off: 0
-    }
-  },
-
-  emeter: {
-    realtime: {
-      current: 0.1256,
-      voltage: 122.049119,
-      power: 3.14,
-      total: 51.493
     }
   }
 });
