@@ -1,6 +1,6 @@
 {
   "name": "tplink-smarthome-simulator",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "TP-Link Smarthome Device Simulator",
   "author": "Patrick Seal",
   "license": "MIT",
@@ -34,7 +34,7 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
-    "release": "standard-version",
+    "release": "standard-version --sign",
     "test": "semistandard && cross-env NODE_ENV=test nyc mocha",
     "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
     "build": "./node_modules/.bin/babel src -d lib",
