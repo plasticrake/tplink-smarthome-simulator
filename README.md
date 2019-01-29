@@ -50,11 +50,3 @@ devices.forEach((d) => {
 
 UdpServer.start();
 ```
-
-## TODO
-
-- [ ] Document API
-- [ ] Write tests
-- [ ] Create Web Interface
-  - [ ] Monitor requests / responses
-  - [ ] View/Modify Device State
