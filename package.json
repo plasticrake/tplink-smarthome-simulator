@@ -34,6 +34,7 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
+    "release": "standard-version",
     "test": "semistandard && cross-env NODE_ENV=test nyc mocha",
     "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
     "build": "./node_modules/.bin/babel src -d lib",
@@ -44,7 +45,7 @@
     "npm": ">=3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.2.0",
+    "@babel/runtime": "^7.3.1",
     "debug": "^4.1.1",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.merge": "^4.6.1",
@@ -55,7 +56,7 @@
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
     "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -65,6 +66,7 @@
     "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
-    "semistandard": "^13.0.1"
+    "semistandard": "^13.0.1",
+    "standard-version": "^4.4.0"
   }
 }
