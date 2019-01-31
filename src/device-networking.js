@@ -74,7 +74,10 @@ class DeviceNetworking extends EventEmitter {
         logTcp('[%s] TCP responding, delay:%s,', this.model, this.responseDelay, socket.address());
         logTcp(responseForLog);
         this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseForLog, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
-        socket.end(response);
+        socket.write(response);
+        if (this.device.endSocketAfterResponse) {
+          socket.end();
+        }
       }, this.responseDelay);
     }
   }

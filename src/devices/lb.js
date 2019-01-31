@@ -94,6 +94,9 @@ class Lb {
       })
     };
   }
+  get endSocketAfterResponse () {
+    return false;
+  }
   get mac () {
     return this.data.system.sysinfo.mic_mac;
   }

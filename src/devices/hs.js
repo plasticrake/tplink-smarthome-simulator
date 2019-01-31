@@ -245,6 +245,10 @@ class Hs extends Base {
     this.onSince = new Date();
   }
 
+  get endSocketAfterResponse () {
+    return true;
+  }
+
   get sysinfo () {
     this.data.system.sysinfo.on_time = this.onTime;
     return this.data.system.sysinfo;
