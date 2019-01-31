@@ -1,6 +1,6 @@
 {
   "name": "tplink-smarthome-simulator",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "TP-Link Smarthome Device Simulator",
   "author": "Patrick Seal",
   "license": "MIT",
@@ -19,6 +19,8 @@
     "hs105",
     "hs110",
     "hs200",
+    "hs220",
+    "hs300",
     "lb100",
     "lb110",
     "lb120",
@@ -32,13 +34,14 @@
     "lib"
   ],
   "scripts": {
-    "preversion": "npm test",
-    "postversion": "git push && git push --tags",
-    "release": "standard-version --sign",
     "test": "semistandard && cross-env NODE_ENV=test nyc mocha",
     "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
     "build": "./node_modules/.bin/babel src -d lib",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags",
+    "prerelease": "npm test && npm run build",
+    "release": "standard-version --sign"
   },
   "engines": {
     "node": ">=10.8.0",
@@ -49,7 +52,7 @@
     "debug": "^4.1.1",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.merge": "^4.6.1",
-    "tplink-smarthome-crypto": "^1.0.0"
+    "tplink-smarthome-crypto": "^2.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
