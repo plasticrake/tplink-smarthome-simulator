@@ -1,12 +1,13 @@
+<!-- markdownlint-disable MD033 -->
 
 # tplink-smarthome-simulator
+
 [![NPM Version](https://img.shields.io/npm/v/tplink-smarthome-simulator.svg)](https://www.npmjs.com/package/tplink-smarthome-simulator)
 [![Build Status](https://travis-ci.org/plasticrake/tplink-smarthome-simulator.svg?branch=master)](https://travis-ci.org/plasticrake/tplink-smarthome-simulator)
 [![codecov](https://codecov.io/gh/plasticrake/tplink-smarthome-simulator/branch/master/graph/badge.svg)](https://codecov.io/gh/plasticrake/tplink-smarthome-simulator)
 [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
 <img src="https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png" align="right" alt="Kasa Screenshot" width=250>
-
 
 TP-Link Smart Home Device Simulator
 
@@ -16,15 +17,16 @@ See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tr
 
 [`debug`](https://github.com/visionmedia/debug) is used for output. To see all messages set the DEBUG environment variable.
 To see everything:
-```
+
+```console
 DEBUG=* node examples/multi-device.js
 ```
 
 To see most:
-```
+
+```console
 DEBUG=*,-device:udp,*:error node examples/multi-device.js
 ```
-
 
 ```javascript
 'use strict';
