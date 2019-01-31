@@ -44,7 +44,7 @@
     "release": "standard-version --sign"
   },
   "engines": {
-    "node": ">=10.8.0",
+    "node": ">=6.5",
     "npm": ">=3"
   },
   "dependencies": {
