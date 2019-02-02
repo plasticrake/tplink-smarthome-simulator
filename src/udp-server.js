@@ -15,27 +15,31 @@ UdpServer.start = function ({ port = 9999 } = {}) {
   self.socketBound = false;
 
   return new Promise((resolve, reject) => {
-    self.socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+    try {
+      self.socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
-    self.socket.on('listening', () => {
-      const address = self.socket.address();
-      self.socketBound = true;
-      log('UDP server listening', address);
-      resolve(UdpServer);
-    });
+      self.socket.on('listening', () => {
+        const address = self.socket.address();
+        self.socketBound = true;
+        log('UDP server listening', address);
+        resolve(UdpServer);
+      });
 
-    self.socket.on('message', (msg, rinfo) => {
-      self.emit('message', msg, rinfo);
-    });
+      self.socket.on('message', (msg, rinfo) => {
+        self.emit('message', msg, rinfo);
+      });
 
-    self.socket.on('error', (exception) => {
-      logErr(exception);
-      self.socket.close();
-      self.socketBound = false;
-      resolve(exception);
-    });
+      self.socket.on('error', (exception) => {
+        logErr(exception);
+        self.socket.close();
+        self.socketBound = false;
+        reject(exception);
+      });
 
-    self.socket.bind(port);
+      self.socket.bind(port);
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 

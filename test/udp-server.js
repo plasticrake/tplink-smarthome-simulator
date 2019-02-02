@@ -9,6 +9,7 @@ const expect = chai.expect;
 const UdpServer = require('../src').UdpServer;
 
 describe('UdpServer', function () {
+  this.retries(2);
   describe('.start()', function () {
     it('defaults', async function () {
       await UdpServer.start();

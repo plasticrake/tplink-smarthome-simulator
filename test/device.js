@@ -10,6 +10,8 @@ const Device = require('../src').Device;
 const processCommand = require('../src/device').processCommand;
 
 describe('Device', function () {
+  this.retries(2);
+
   describe('constructor()', function () {
     it('accept options', function () {
       var opt = { model: 'hs100', port: 1234, address: '127.0.0.1', data: { 'deviceId': 'ABC' } };

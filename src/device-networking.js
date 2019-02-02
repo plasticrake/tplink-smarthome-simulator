@@ -84,41 +84,17 @@ class DeviceNetworking extends EventEmitter {
 
   async start () {
     return new Promise((resolve, reject) => {
-      this.server = net.createServer((socket) => {
-        socket.on('data', (chunk) => {
-          this.processTcpMessage(chunk, socket);
+      try {
+        let udpAddress;
+        let retryCount = 0;
+        this.server = net.createServer((socket) => {
+          socket.on('data', (chunk) => {
+            this.processTcpMessage(chunk, socket);
+          });
+          socket.on('error', (err) => { this.emit('error', err); });
+          socket.on('end', () => { socket.end(); });
         });
-        socket.on('error', (err) => { this.emit('error', err); });
-        socket.on('end', () => { socket.end(); });
-      });
-      this.server.on('error', (err) => {
-        logTcpErr(err);
-        reject(err);
-      });
-
-      // bind to UDP then TCP and share port
-      this.udpSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
-
-      // Save to call removeListener on #stop()
-      this.udpCb = (msg, rinfo) => {
-        this.processUdpMessage(msg, rinfo);
-      };
-
-      UdpServer.on('message', this.udpCb);
-
-      this.udpSocket.on('message', this.udpCb);
-
-      this.udpSocket.on('error', (exception) => {
-        logUdpErr(exception);
-        this.udpSocket.close();
-        this.udpSocketBound = false;
-      });
-
-      this.udpSocket.bind(this.port, this.address, () => {
-        this.udpSocketBound = true;
-        const udpAddress = this.udpSocket.address();
-        log('[%s] UDP bound', this.model, udpAddress);
-        this.server.listen({ port: udpAddress.port, host: this.address }, () => {
+        this.server.on('listening', () => {
           this.serverBound = true;
           const tcpAddress = this.server.address();
           this.address = tcpAddress.address;
@@ -126,7 +102,48 @@ class DeviceNetworking extends EventEmitter {
           log('[%s] TCP server bound', this.model, tcpAddress);
           resolve(this);
         });
-      });
+        this.server.on('error', (err) => {
+          logTcpErr(err);
+          if (err.code === 'EADDRINUSE' && udpAddress != null && retryCount < 2) {
+            retryCount += 1;
+            logTcpErr('Address in use, retrying...');
+            setTimeout(() => {
+              this.server.close();
+              this.server.listen({ port: udpAddress.port, host: this.address });
+            }, 500);
+            return;
+          }
+          reject(err);
+        });
+
+        // bind to UDP then TCP and share port
+        this.udpSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+
+        // Save to call removeListener on #stop()
+        this.udpCb = (msg, rinfo) => {
+          this.processUdpMessage(msg, rinfo);
+        };
+
+        UdpServer.on('message', this.udpCb);
+
+        this.udpSocket.on('message', this.udpCb);
+
+        this.udpSocket.on('error', (exception) => {
+          logUdpErr(exception);
+          this.udpSocket.close();
+          this.udpSocketBound = false;
+          reject(exception);
+        });
+
+        this.udpSocket.bind(this.port, this.address, () => {
+          this.udpSocketBound = true;
+          udpAddress = this.udpSocket.address();
+          log('[%s] UDP bound', this.model, udpAddress);
+          this.server.listen({ port: udpAddress.port, host: this.address });
+        });
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 
