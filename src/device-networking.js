@@ -30,7 +30,7 @@ class DeviceNetworking extends EventEmitter {
   processUdpMessage (msg, rinfo) {
     let decryptedMsg = decrypt(msg).toString('utf8');
     logUdp('[%s] UDP receiving', this.model, rinfo.port, rinfo.address);
-    this.emit('data', { time: Date.now(), protocol: 'udp', message: decryptedMsg, remoteAddress: rinfo.address, remortPort: rinfo.port });
+    this.emit('data', { time: Date.now(), protocol: 'udp', message: decryptedMsg, remoteAddress: rinfo.address, remotePort: rinfo.port });
     let msgObj;
     try {
       msgObj = JSON.parse(decryptedMsg);
@@ -47,7 +47,7 @@ class DeviceNetworking extends EventEmitter {
       setTimeout(() => {
         logUdp('[%s] UDP responding, delay:%s,', this.model, this.responseDelay, rinfo.port, rinfo.address);
         logUdp(responseForLog);
-        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseForLog, remoteAddress: rinfo.address, remortPort: rinfo.port });
+        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseForLog, remoteAddress: rinfo.address, remotePort: rinfo.port });
         this.udpSocket.send(response, 0, response.length, rinfo.port, rinfo.address);
       }, this.responseDelay);
     }
@@ -57,7 +57,7 @@ class DeviceNetworking extends EventEmitter {
     logTcp('[%s] TCP DATA', this.model, socket.remoteAddress, socket.remotePort);
     let decryptedMsg = decryptWithHeader(msg).toString('utf8');
     logTcp(decryptedMsg);
-    this.emit('data', { time: Date.now(), protocol: 'tcp', message: decryptedMsg, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
+    this.emit('data', { time: Date.now(), protocol: 'tcp', message: decryptedMsg, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remotePort: socket.remotePort });
     let msgObj;
     try {
       msgObj = JSON.parse(decryptedMsg);
@@ -73,7 +73,7 @@ class DeviceNetworking extends EventEmitter {
       setTimeout(() => {
         logTcp('[%s] TCP responding, delay:%s,', this.model, this.responseDelay, socket.address());
         logTcp(responseForLog);
-        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseForLog, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remortPort: socket.remotePort });
+        this.emit('response', { time: Date.now(), protocol: 'tcp', message: responseForLog, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remotePort: socket.remotePort });
         socket.write(response);
         if (this.device.endSocketAfterResponse) {
           socket.end();

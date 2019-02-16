@@ -1,0 +1,62 @@
+{
+  "version": "0.1",
+
+  "language": "en",
+  "words": [
+    "plasticrake",
+
+    "castarray",
+    "defaultsdeep",
+    "isequal",
+    "jsonparse",
+
+    "camelcase",
+    "customizer",
+    "polyfill",
+    "preallocate",
+    "rssi",
+    "ssid",
+    "subnet",
+    "truthy",
+    "wifi",
+
+    "SNDBUF",
+
+    "binded",
+    "daystat",
+    "devs",
+    "emeter",
+    "heapsize",
+    "igain",
+    "itarget",
+    "kasa",
+    "lightingservice",
+    "lightstate",
+    "Linkie",
+    "mday",
+    "monthstat",
+    "netif",
+    "realtime",
+    "scaninfo",
+    "smartbulb",
+    "smarthome",
+    "smartlife",
+    "smartplugswitch",
+    "smartpowerstrip",
+    "stainfo",
+    "sysinfo",
+    "tcsp",
+    "timesetting",
+    "tplink",
+    "tplinkcloud",
+    "uboot",
+    "vgain",
+    "vtarget",
+    "wday"
+  ],
+  "languageSettings": [{
+    "languageId": "markdown",
+    "local": "*",
+    "dictionaries": ["node"]
+  }]
+}

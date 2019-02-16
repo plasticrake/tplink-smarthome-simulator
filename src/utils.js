@@ -30,11 +30,11 @@ function readJson (path, cb) {
   });
 }
 
-function randomMac (prefix, delim = ':') {
-  var mac = prefix || ['50', 'c7', 'bf'].join(delim);
+function randomMac (prefix, delimiter = ':') {
+  var mac = prefix || ['50', 'c7', 'bf'].join(delimiter);
 
   for (var i = 0; i < 6; i++) {
-    if (i % 2 === 0) mac += delim;
+    if (i % 2 === 0) mac += delimiter;
     mac += Math.floor(Math.random() * 16).toString(16);
   }
 
@@ -123,7 +123,7 @@ function editRule (rules, rule) {
 }
 
 function deleteRule (rules, id) {
-  if (!id) throw { 'err_code': -10002, 'err_msg': 'Missing neccesary argument' };
+  if (!id) throw { 'err_code': -10002, 'err_msg': 'Missing neccesary argument' }; // cspell:disable-line // Typo on purpose
   let rule = rules.find((r, i, a) => {
     if (r.id === id) {
       a.splice(i, 1); // remove rule
