@@ -20,6 +20,9 @@ class Hs220 extends Hs200 {
     this.api['smartlife.iot.dimmer'] = {
 
       set_brightness: errCode(({ brightness }) => {
+        if (brightness <= 0) {
+          throw { err_code: -3, err_msg: 'invalid argument' }; // eslint-disable-line no-throw-literal
+        }
         this.data.system.sysinfo.brightness = brightness;
       }),
 
