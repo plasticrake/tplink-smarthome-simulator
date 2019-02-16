@@ -37,7 +37,7 @@ class DeviceNetworking extends EventEmitter {
     } catch (err) {
       logUdpErr('JSON.parse, could not parse:', decryptedMsg);
       this.emit('error', err);
-      throw err;
+      return;
     }
     logUdp(msgObj);
 
@@ -64,7 +64,7 @@ class DeviceNetworking extends EventEmitter {
     } catch (err) {
       logUdpErr('JSON.parse, could not parse:', decryptedMsg);
       this.emit('error', err);
-      throw err;
+      return;
     }
 
     let { response, responseForLog } = this.device.processTcpMessage(msgObj);
