@@ -15,7 +15,7 @@ describe('Device', function () {
   describe('constructor()', function () {
     it('accept options', function () {
       var opt = { model: 'hs100', port: 1234, address: '127.0.0.1', data: { 'deviceId': 'ABC' } };
-      let device = new Device(opt);
+      const device = new Device(opt);
       expect(device).to.have.property('model', opt.model);
       expect(device).to.have.property('port', opt.port);
       expect(device).to.have.property('address', opt.address);
@@ -23,7 +23,7 @@ describe('Device', function () {
       expect(device.api).to.exist;
     });
     it('defaults', function () {
-      let device = new Device({ model: 'hs100' });
+      const device = new Device({ model: 'hs100' });
       expect(device).to.have.property('port', 0);
       expect(device).to.have.property('address', '0.0.0.0');
       expect(device).to.have.nested.property('data.model', 'hs100');
