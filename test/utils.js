@@ -24,7 +24,7 @@ describe('utils', function () {
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListData = d; }),
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListDataOrig = d; })
       ]).then(() => { done(); }).catch((reason) => { done(reason); });
-      });
+    });
     it('retrieve day list with existing data', function () {
       let dayList = utils.getDayList(2016, 12, 'energy', dayListData, 1.5);
       let dayListOrig = dayListDataOrig.filter((d) => (d.month === 12));
@@ -66,7 +66,7 @@ describe('utils', function () {
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListData = d; }),
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListDataOrig = d; })
       ]).then(() => { done(); }).catch((reason) => { done(reason); });
-      });
+    });
     it('retrieve month list with existing data', function () {
       expect(dayListData).to.not.equal(dayListDataOrig);
       let data = dayListData;

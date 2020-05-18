@@ -47,10 +47,6 @@ function generateId (len) {
   return crypto.randomBytes(len / 2).toString('hex').toUpperCase();
 }
 
-function isString (val) {
-  return (typeof val === 'string' || val instanceof String);
-}
-
 function parseJsonStream (json) {
   const parser = new Parser();
   const results = [];
