@@ -7,7 +7,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const Device = require('../src').Device;
-const processCommand = require('../src/device').processCommand;
+const processCommands = require('../src/device').processCommands;
 
 describe('Device', function () {
   this.retries(2);
@@ -50,6 +50,7 @@ describe('Device', function () {
   });
 
   describe('private', function () {
+    this.retries(0);
     let api;
     before(function () {
       api = {
@@ -60,18 +61,97 @@ describe('Device', function () {
         }
       };
     });
-    describe('processCommand', function () {
+
+    describe('processCommands', function () {
       it('should get command results', function () {
-        let results = processCommand({ system: { get_sysinfo: {} } }, api);
-        expect(results).to.eql({ system: { get_sysinfo: api.system.get_sysinfo() } });
+        const results = processCommands(
+          JSON.stringify({ system: { get_sysinfo: {} } }),
+          api
+        );
+        expect(results).to.eql(
+          JSON.stringify({ system: { get_sysinfo: api.system.get_sysinfo() } })
+        );
       });
+
+      it('should get command results (duplicate modules)', function () {
+        const results = processCommands(
+          `{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}`,
+          api
+        );
+        expect(results).to.eql(
+          `{"system":{"get_sysinfo":${JSON.stringify(
+            api.system.get_sysinfo()
+          )}},"system":{"get_sysinfo":${JSON.stringify(
+            api.system.get_sysinfo()
+          )}}}`
+        );
+      });
+
+      it('should get command results (duplicate methods)', function () {
+        const results = processCommands(
+          `{"system":{"get_sysinfo":{},"get_sysinfo":{}}}`,
+          api
+        );
+        expect(results).to.eql(
+          `{"system":{"get_sysinfo":${JSON.stringify(
+            api.system.get_sysinfo()
+          )},"get_sysinfo":${JSON.stringify(api.system.get_sysinfo())}}}`
+        );
+      });
+
       it('should result in err_code -1 with invalid module', function () {
-        let results = processCommand({ system_invalid: { get_sysinfo: {} } }, api);
-        expect(results).to.eql({ system_invalid: { err_code: -1, err_msg: 'module not support' } });
+        const results = processCommands(
+          JSON.stringify({ system_invalid: { get_sysinfo: {} } }),
+          api
+        );
+        expect(results).to.eql(
+          JSON.stringify({
+            system_invalid: { err_code: -1, err_msg: 'module not support' }
+          })
+        );
       });
+
+      it('should result in err_code -1 with invalid module (with other valid command)', function () {
+        const results = processCommands(
+          JSON.stringify({ system_invalid: { get_sysinfo: {} }, system: { get_sysinfo: {} } }),
+          api
+        );
+        expect(results).to.eql(
+          JSON.stringify({
+            system_invalid: { err_code: -1, err_msg: 'module not support' },
+            system: { 'get_sysinfo': api.system.get_sysinfo() }
+          })
+        );
+      });
+
+      it('should result in err_code -1 with invalid module with two methods (with other valid command)', function () {
+        const results = processCommands(
+          JSON.stringify({ system_invalid: { get_sysinfo: {}, another_method: {} }, system: { get_sysinfo: {} } }),
+          api
+        );
+        expect(results).to.eql(
+          JSON.stringify({
+            system_invalid: { err_code: -1, err_msg: 'module not support' },
+            system: { 'get_sysinfo': api.system.get_sysinfo() }
+          })
+        );
+      });
+
       it('should result in err_code -2 with invalid member', function () {
-        let results = processCommand({ system: { get_sysinfo_invalid: {} } }, api);
-        expect(results).to.eql({ system: { get_sysinfo_invalid: { err_code: -2, err_msg: 'member not support' } } });
+        const results = processCommands(
+          JSON.stringify({ system: { get_sysinfo_invalid: {} } }),
+          api
+        );
+        expect(results).to.eql(
+          JSON.stringify({
+            system: {
+              get_sysinfo_invalid: {
+                err_code: -2,
+                err_msg: 'member not support'
+              }
+            }
+          })
+        );
       });
     });
   });

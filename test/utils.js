@@ -24,7 +24,7 @@ describe('utils', function () {
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListData = d; }),
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListDataOrig = d; })
       ]).then(() => { done(); }).catch((reason) => { done(reason); });
-    });
+      });
     it('retrieve day list with existing data', function () {
       let dayList = utils.getDayList(2016, 12, 'energy', dayListData, 1.5);
       let dayListOrig = dayListDataOrig.filter((d) => (d.month === 12));
@@ -66,7 +66,7 @@ describe('utils', function () {
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListData = d; }),
         utils.readJson(require.resolve('./fixtures/day_list.json')).then((d) => { dayListDataOrig = d; })
       ]).then(() => { done(); }).catch((reason) => { done(reason); });
-    });
+      });
     it('retrieve month list with existing data', function () {
       expect(dayListData).to.not.equal(dayListDataOrig);
       let data = dayListData;
@@ -94,6 +94,38 @@ describe('utils', function () {
       // Generated data for year was saved
       expect(data).to.have.lengthOf(366);
       expect(data).to.all.have.keys('year', 'month', 'day', 'energy');
+    });
+  });
+
+  describe('.parseJsonStream()', function () {
+    it('set_dev_location', function () {
+      expect(utils.parseJsonStream('{"system":{"set_dev_alias":{"alias":"new name"}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'set_dev_alias', args: { alias: 'new name' } }]
+        }]
+
+      );
+    });
+    it('duplicate modules', function () {
+      expect(utils.parseJsonStream('{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }]
+        }, {
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }]
+        }]
+
+      );
+    });
+    it('duplicate methods', function () {
+      expect(utils.parseJsonStream('{"system":{"get_sysinfo":{},"get_sysinfo":{}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }, { name: 'get_sysinfo', args: {} }]
+        }]
+      );
     });
   });
 });
