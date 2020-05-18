@@ -12,6 +12,7 @@
 
     "camelcase",
     "customizer",
+    "ifconfig",
     "polyfill",
     "preallocate",
     "rssi",
