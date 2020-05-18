@@ -28,20 +28,20 @@ class DeviceNetworking extends EventEmitter {
   }
 
   processUdpMessage (msg, rinfo) {
-    let decryptedMsg = decrypt(msg).toString('utf8');
+    const decryptedMsg = decrypt(msg).toString('utf8');
     logUdp('[%s] UDP receiving', this.model, rinfo.port, rinfo.address);
     this.emit('data', { time: Date.now(), protocol: 'udp', message: decryptedMsg, remoteAddress: rinfo.address, remotePort: rinfo.port });
-    let msgObj;
+    logUdp(decryptedMsg);
+
+    let response, responseForLog;
     try {
-      msgObj = JSON.parse(decryptedMsg);
+      ({ response, responseForLog } = this.device.processUdpMessage(decryptedMsg));
     } catch (err) {
-      logUdpErr('JSON.parse, could not parse:', decryptedMsg);
+      logUdpErr('processUdpMessage, could not process:', decryptedMsg);
+      logUdpErr(err);
       this.emit('error', err);
       return;
     }
-    logUdp(msgObj);
-
-    let { response, responseForLog } = this.device.processUdpMessage(msgObj);
 
     if (response !== undefined) {
       setTimeout(() => {
@@ -55,19 +55,19 @@ class DeviceNetworking extends EventEmitter {
 
   processTcpMessage (msg, socket) {
     logTcp('[%s] TCP DATA', this.model, socket.remoteAddress, socket.remotePort);
-    let decryptedMsg = decryptWithHeader(msg).toString('utf8');
+    const decryptedMsg = decryptWithHeader(msg).toString('utf8');
     logTcp(decryptedMsg);
     this.emit('data', { time: Date.now(), protocol: 'tcp', message: decryptedMsg, localAddress: socket.localAddress, localPort: socket.localPort, remoteAddress: socket.remoteAddress, remotePort: socket.remotePort });
-    let msgObj;
+
+    let response, responseForLog;
     try {
-      msgObj = JSON.parse(decryptedMsg);
+      ({ response, responseForLog } = this.device.processTcpMessage(decryptedMsg));
     } catch (err) {
-      logUdpErr('JSON.parse, could not parse:', decryptedMsg);
+      logTcpErr('processTcpMessage, could not process:', decryptedMsg);
+      logTcpErr(err);
       this.emit('error', err);
       return;
     }
-
-    let { response, responseForLog } = this.device.processTcpMessage(msgObj);
 
     if (response !== undefined) {
       setTimeout(() => {

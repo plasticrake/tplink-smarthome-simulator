@@ -96,4 +96,36 @@ describe('utils', function () {
       expect(data).to.all.have.keys('year', 'month', 'day', 'energy');
     });
   });
+
+  describe('.parseJsonStream()', function () {
+    it('set_dev_location', function () {
+      expect(utils.parseJsonStream('{"system":{"set_dev_alias":{"alias":"new name"}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'set_dev_alias', args: { alias: 'new name' } }]
+        }]
+
+      );
+    });
+    it('duplicate modules', function () {
+      expect(utils.parseJsonStream('{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }]
+        }, {
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }]
+        }]
+
+      );
+    });
+    it('duplicate methods', function () {
+      expect(utils.parseJsonStream('{"system":{"get_sysinfo":{},"get_sysinfo":{}}}')).to.eql(
+        [{
+          name: 'system',
+          methods: [{ name: 'get_sysinfo', args: {} }, { name: 'get_sysinfo', args: {} }]
+        }]
+      );
+    });
+  });
 });

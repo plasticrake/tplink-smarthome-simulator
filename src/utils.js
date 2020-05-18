@@ -4,6 +4,8 @@
 const crypto = require('crypto');
 const fs = require('fs');
 
+const Parser = require('jsonparse');
+
 function errCode (fn) {
   return (...args) => {
     try {
@@ -43,6 +45,27 @@ function randomMac (prefix, delimiter = ':') {
 
 function generateId (len) {
   return crypto.randomBytes(len / 2).toString('hex').toUpperCase();
+}
+
+function parseJsonStream (json) {
+  const parser = new Parser();
+  const results = [];
+  let methods = [];
+
+  parser.onValue = function (value) {
+    if (this.stack.length === 2) {
+      const methodName = this.key;
+      methods.push({ name: methodName, args: value });
+    }
+    if (this.stack.length === 1) {
+      const moduleName = this.key;
+      results.push({ name: moduleName, methods });
+      methods = [];
+    }
+  };
+
+  parser.write(json);
+  return results;
 }
 
 function randomInt (min, max) {
@@ -139,6 +162,7 @@ module.exports = {
   errCode,
   randomMac,
   generateId,
+  parseJsonStream,
   randomInt,
   randomFloat,
   randomLatitude,
