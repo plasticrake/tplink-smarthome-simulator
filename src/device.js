@@ -29,7 +29,7 @@ class Device {
     this.model = model;
     this.data = Object.assign({}, data);
     this.data.model = model;
-    if (!alias == null) this.data.alias = alias;
+    if (alias != null) this.data.alias = alias;
 
     let SpecificDevice = require(`./devices/${model}`);
     this._deviceInfo = new SpecificDevice(this.data);
