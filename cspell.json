@@ -54,9 +54,11 @@
     "vtarget",
     "wday"
   ],
-  "languageSettings": [{
-    "languageId": "markdown",
-    "local": "*",
-    "dictionaries": ["node"]
-  }]
+  "languageSettings": [
+    {
+      "languageId": "markdown",
+      "local": "*",
+      "dictionaries": ["node"]
+    }
+  ]
 }

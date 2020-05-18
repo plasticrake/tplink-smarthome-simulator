@@ -1,8 +1,6 @@
-'use strict';
-
 const hs = require('./hs');
 
-const hs300 = Object.assign({}, hs);
+const hs300 = { ...hs };
 module.exports = hs300;
 
 Object.assign(hs300, {
@@ -17,8 +15,8 @@ Object.assign(hs300, {
       updating: 0,
       led_off: 0,
       child_num: 6,
-      children: null
-    }
+      children: null,
+    },
   },
 
   children: {
@@ -28,8 +26,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock One',
         on_time: 0,
-        next_action: { type: -1 }
-      }
+        next_action: { type: -1 },
+      },
     },
     '01': {
       sysinfo: {
@@ -37,8 +35,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock Two',
         on_time: 0,
-        next_action: { type: -1 }
-      }
+        next_action: { type: -1 },
+      },
     },
     '02': {
       sysinfo: {
@@ -46,8 +44,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock Three',
         on_time: 0,
-        next_action: { type: -1 }
-      }
+        next_action: { type: -1 },
+      },
     },
     '03': {
       sysinfo: {
@@ -55,8 +53,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock Four',
         on_time: 0,
-        next_action: { type: -1 }
-      }
+        next_action: { type: -1 },
+      },
     },
     '04': {
       sysinfo: {
@@ -64,8 +62,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock Five',
         on_time: 0,
-        next_action: { type: -1 }
-      }
+        next_action: { type: -1 },
+      },
     },
     '05': {
       sysinfo: {
@@ -73,8 +71,8 @@ Object.assign(hs300, {
         state: 0,
         alias: 'Mock Six',
         on_time: 0,
-        next_action: { type: -1 }
-      }
-    }
-  }
+        next_action: { type: -1 },
+      },
+    },
+  },
 });

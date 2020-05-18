@@ -1,6 +1,7 @@
-'use strict';
+const { Device } = require('./device');
+const UdpServer = require('./udp-server');
 
 module.exports = {
-  Device: require('./device').Device,
-  UdpServer: require('./udp-server')
+  Device,
+  UdpServer,
 };

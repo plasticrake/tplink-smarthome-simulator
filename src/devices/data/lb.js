@@ -1,19 +1,16 @@
-'use strict';
-
 const base = require('./base');
 
-const lb = Object.assign({}, base);
+const lb = { ...base };
 module.exports = lb;
 
 Object.assign(lb, {
-
   emeter: {
     realtime: {
-      power_mw: 10800
+      power_mw: 10800,
     },
     daystat: {
-      day_list: []
-    }
+      day_list: [],
+    },
   },
 
   'smartlife.iot.smartbulb.lightingservice': {
@@ -24,17 +21,16 @@ Object.assign(lb, {
       wattage: 10,
       incandescent_equivalent: 60,
       max_lumens: 800,
-      color_rendering_index: 80
+      color_rendering_index: 80,
     },
     get_default_behavior: {
       soft_on: {
-        mode: 'last_status'
+        mode: 'last_status',
       },
       hard_on: {
-        mode: 'last_status'
+        mode: 'last_status',
       },
-      err_code: 0
-    }
-  }
-
+      err_code: 0,
+    },
+  },
 });

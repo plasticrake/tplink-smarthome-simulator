@@ -1,18 +1,17 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-throw-literal */
 
-'use strict';
-
 const defaultsDeep = require('lodash.defaultsdeep');
 
 const utils = require('../utils');
-const errCode = utils.errCode;
+
+const { errCode } = utils;
 const Base = require('./base');
 
 const defaultData = require('./data/base');
 
 class Hs extends Base {
-  constructor (data = {}) {
+  constructor(data = {}) {
     super(data);
     defaultsDeep(this.data, defaultData);
 
@@ -26,12 +25,14 @@ class Hs extends Base {
       set_relay_state: errCode(({ state }) => {
         this.relayState = state;
       }),
-      set_dev_location: errCode(({ longitude_i, latitude_i, latitude, longitude }) => {
-        this.data.system.sysinfo.latitude = latitude;
-        this.data.system.sysinfo.longitude = longitude;
-        this.data.system.sysinfo.latitude_i = latitude_i;
-        this.data.system.sysinfo.longitude_i = longitude_i;
-      }),
+      set_dev_location: errCode(
+        ({ longitude_i, latitude_i, latitude, longitude }) => {
+          this.data.system.sysinfo.latitude = latitude;
+          this.data.system.sysinfo.longitude = longitude;
+          this.data.system.sysinfo.latitude_i = latitude_i;
+          this.data.system.sysinfo.longitude_i = longitude_i;
+        }
+      ),
       set_led_off: errCode(({ off }) => {
         this.data.system.sysinfo.led_off = off;
       }),
@@ -47,33 +48,67 @@ class Hs extends Base {
         }
         return {};
       }),
-      download_firmware: errCode(({ url }) => { return {}; }),
-      get_download_state: errCode(({ url }) => { throw { err_code: -7, err_msg: 'unknown error' }; }),
-      flash_firmware: errCode(({ url }) => { throw { err_code: -5, err_msg: 'not enough memory' }; }),
-      set_mac_addr: errCode(({ mac }) => { this.mac = mac; }),
-      set_device_id: errCode(({ deviceId }) => { this.deviceId = deviceId; }),
-      set_hw_id: errCode(({ hwId }) => { this.hwId = hwId; }),
-      test_check_uboot: errCode(() => { return this.data.system.test_check_uboot; }),
-      set_test_mode: errCode(({ enable }) => { return {}; }),
-      get_dev_icon: errCode(() => { return this.data.system.dev_icon; }),
-      set_dev_icon: errCode((data) => { this.data.system.dev_icon = data; })
+      // eslint-disable-next-line no-unused-vars
+      download_firmware: errCode(({ url }) => {
+        return {};
+      }),
+      // eslint-disable-next-line no-unused-vars
+      get_download_state: errCode(({ url }) => {
+        throw { err_code: -7, err_msg: 'unknown error' };
+      }),
+      // eslint-disable-next-line no-unused-vars
+      flash_firmware: errCode(({ url }) => {
+        throw { err_code: -5, err_msg: 'not enough memory' };
+      }),
+      set_mac_addr: errCode(({ mac }) => {
+        this.mac = mac;
+      }),
+      set_device_id: errCode(({ deviceId }) => {
+        this.deviceId = deviceId;
+      }),
+      set_hw_id: errCode(({ hwId }) => {
+        this.hwId = hwId;
+      }),
+      test_check_uboot: errCode(() => {
+        return this.data.system.test_check_uboot;
+      }),
+      // eslint-disable-next-line no-unused-vars
+      set_test_mode: errCode(({ enable }) => {
+        return {};
+      }),
+      get_dev_icon: errCode(() => {
+        return this.data.system.dev_icon;
+      }),
+      // eslint-disable-next-line no-shadow
+      set_dev_icon: errCode((data) => {
+        this.data.system.dev_icon = data;
+      }),
     };
 
     this.api.cnCloud = {
       get_info: errCode(() => {
         return this.data.cnCloud.info;
       }),
-      set_server_url: errCode(({ server }) => { this.data.cnCloud.info.server = server; }),
+      set_server_url: errCode(({ server }) => {
+        this.data.cnCloud.info.server = server;
+      }),
+      // eslint-disable-next-line no-unused-vars
       bind: errCode(({ username, password }) => {
         this.data.cnCloud.info.username = username;
         this.data.cnCloud.info.binded = 1;
       }),
       unbind: errCode(() => {
-        if (this.data.cnCloud.info.binded === 0) throw { 'err_code': -4002, 'err_msg': "Device hasn't bound to any account yet" };
+        if (this.data.cnCloud.info.binded === 0)
+          throw {
+            err_code: -4002,
+            err_msg: "Device hasn't bound to any account yet",
+          };
         this.data.cnCloud.info.username = '';
         this.data.cnCloud.info.binded = 0;
       }),
-      get_intl_fw_list: errCode(() => { return { fw_list: [] }; })
+      get_intl_fw_list: errCode(() => {
+        return { fw_list: [] };
+      }),
     };
 
     this.api.schedule = {
@@ -84,9 +119,10 @@ class Hs extends Base {
         return this.scheduleContext.rules;
       }),
       add_rule: errCode((rule) => {
-        rule.id = utils.generateId(32);
-        this.scheduleContext.rules.rule_list.push(rule);
-        return { id: rule.id };
+        const newRule = { ...rule };
+        newRule.id = utils.generateId(32);
+        this.scheduleContext.rules.rule_list.push(newRule);
+        return { id: newRule.id };
       }),
       set_overall_enable: errCode(({ enable }) => {
         this.scheduleContext.rules.enable = enable;
@@ -101,16 +137,31 @@ class Hs extends Base {
         this.scheduleContext.rules.rule_list = [];
       }),
       get_daystat: errCode(({ year, month }) => {
-        let day_list = utils.getDayList(year, month, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
+        const day_list = utils.getDayList(
+          year,
+          month,
+          'time',
+          this.scheduleContext.daystat.day_list,
+          () => {
+            return utils.randomInt(0, 1440);
+          }
+        );
         return { day_list };
       }),
       get_monthstat: errCode(({ year }) => {
-        let month_list = utils.getMonthList(year, 'time', this.scheduleContext.daystat.day_list, () => { return utils.randomInt(0, 1440); });
+        const month_list = utils.getMonthList(
+          year,
+          'time',
+          this.scheduleContext.daystat.day_list,
+          () => {
+            return utils.randomInt(0, 1440);
+          }
+        );
         return { month_list };
       }),
       erase_runtime_stat: errCode(() => {
         this.scheduleContext.daystat.day_list = [];
-      })
+      }),
     };
 
     this.api.anti_theft = {
@@ -118,9 +169,10 @@ class Hs extends Base {
         return this.antiTheftContext.rules;
       }),
       add_rule: errCode((rule) => {
-        rule.id = utils.generateId(32);
-        this.antiTheftContext.rules.rule_list.push(rule);
-        return { id: rule.id };
+        const newRule = { ...rule };
+        newRule.id = utils.generateId(32);
+        this.antiTheftContext.rules.rule_list.push(newRule);
+        return { id: newRule.id };
       }),
       set_overall_enable: errCode(({ enable }) => {
         this.antiTheftContext.rules.enable = enable;
@@ -133,7 +185,7 @@ class Hs extends Base {
       }),
       delete_all_rules: errCode(() => {
         this.antiTheftContext.rules.rule_list = [];
-      })
+      }),
     };
 
     this.api.count_down = {
@@ -141,12 +193,13 @@ class Hs extends Base {
         return this.countDownContext.rules;
       }),
       add_rule: errCode((rule) => {
+        const newRule = { ...rule };
         if (this.countDownContext.rules.rule_list.length > 0) {
           throw { err_code: -10, err_msg: 'table is full' };
         }
-        rule.id = utils.generateId(32);
-        this.countDownContext.rules.rule_list.push(rule);
-        return { id: rule.id };
+        newRule.id = utils.generateId(32);
+        this.countDownContext.rules.rule_list.push(newRule);
+        return { id: newRule.id };
       }),
       edit_rule: errCode((rule) => {
         utils.editRule(this.countDownContext.rules.rule_list, rule);
@@ -156,12 +209,12 @@ class Hs extends Base {
       }),
       delete_all_rules: errCode(() => {
         this.countDownContext.rules.rule_list = [];
-      })
+      }),
     };
 
     this.api.time = {
       get_time: errCode(() => {
-        let d = new Date();
+        const d = new Date();
         return {
           year: d.getFullYear(),
           month: d.getMonth() + 1,
@@ -169,7 +222,7 @@ class Hs extends Base {
           wday: d.getDay(),
           hour: d.getHours(),
           min: d.getMinutes(),
-          sec: d.getSeconds()
+          sec: d.getSeconds(),
         };
       }),
       get_timezone: errCode(() => {
@@ -178,14 +231,18 @@ class Hs extends Base {
       set_timezone: errCode(() => {
         // TODO
         // {"year":2016,"month":1,"mday":1,"hour":10,"min":10,"sec":10,"index":42}
-      })
+      }),
     };
 
     this.api.netif = {
+      // eslint-disable-next-line no-unused-vars
       get_scaninfo: errCode(({ refresh, timeout }) => {
         return this.data.netif.scaninfo;
       }),
-      set_stainfo: errCode(({ ssid, password, key_type }) => { return {}; })
+      // eslint-disable-next-line no-unused-vars
+      set_stainfo: errCode(({ ssid, password, key_type }) => {
+        return {};
+      }),
     };
 
     this.api.emeter = {
@@ -196,7 +253,7 @@ class Hs extends Base {
             voltage_mv: Math.floor(rt.voltage * 1000),
             current_ma: Math.floor(rt.current * 1000),
             power_mw: Math.floor(rt.power * 1000),
-            total_wh: Math.floor(rt.total * 1000)
+            total_wh: Math.floor(rt.total * 1000),
           };
         }
         return this.emeterContext.realtime;
@@ -206,12 +263,22 @@ class Hs extends Base {
         let defaultValue;
         if (this.realtimeV2) {
           key = 'energy_wh';
-          defaultValue = () => { return utils.randomFloat(0, 30); };
+          defaultValue = () => {
+            return utils.randomFloat(0, 30);
+          };
         } else {
           key = 'energy';
-          defaultValue = () => { return utils.randomInt(0, 30000); };
+          defaultValue = () => {
+            return utils.randomInt(0, 30000);
+          };
         }
-        const day_list = utils.getDayList(year, month, key, this.emeterContext.daystat.day_list, defaultValue);
+        const day_list = utils.getDayList(
+          year,
+          month,
+          key,
+          this.emeterContext.daystat.day_list,
+          defaultValue
+        );
         return { day_list };
       }),
       get_monthstat: errCode(({ year } = {}) => {
@@ -219,12 +286,21 @@ class Hs extends Base {
         let defaultValue;
         if (this.realtimeV2) {
           key = 'energy_wh';
-          defaultValue = () => { return utils.randomFloat(0, 30); };
+          defaultValue = () => {
+            return utils.randomFloat(0, 30);
+          };
         } else {
           key = 'energy';
-          defaultValue = () => { return utils.randomInt(0, 30000); };
+          defaultValue = () => {
+            return utils.randomInt(0, 30000);
+          };
         }
-        const month_list = utils.getMonthList(year, key, this.emeterContext.daystat.day_list, defaultValue);
+        const month_list = utils.getMonthList(
+          year,
+          key,
+          this.emeterContext.daystat.day_list,
+          defaultValue
+        );
         return { month_list };
       }),
       erase_emeter_stat: errCode(() => {
@@ -237,49 +313,50 @@ class Hs extends Base {
         this.emeterContext.get_vgain_igain.vgain = vgain;
         this.emeterContext.get_vgain_igain.igain = igain;
       }),
+      // eslint-disable-next-line no-unused-vars
       start_calibration: errCode(({ vtarget, itarget }) => {
         return {};
-      })
+      }),
     };
 
     this.onSince = new Date();
   }
 
-  get endSocketAfterResponse () {
+  // eslint-disable-next-line class-methods-use-this
+  get endSocketAfterResponse() {
     return true;
   }
 
-  get sysinfo () {
+  get sysinfo() {
     this.data.system.sysinfo.on_time = this.onTime;
     return this.data.system.sysinfo;
   }
 
-  get relayState () {
+  get relayState() {
     return this.data.system.sysinfo.relay_state;
   }
 
-  set relayState (relayState) {
+  set relayState(relayState) {
     this.data.system.sysinfo.relay_state = relayState;
     this.onTime = new Date();
   }
 
-  get antiTheftContext () {
+  get antiTheftContext() {
     return this.data.anti_theft;
   }
 
-  get countDownContext () {
+  get countDownContext() {
     return this.data.count_down;
   }
 
-  get onTime () {
+  get onTime() {
     if (this.relayState === 1) {
       return Math.round((Date.now() - this.onSince) / 1000); // in seconds
-    } else {
-      return 0;
     }
+    return 0;
   }
 
-  set onTime (value) {
+  set onTime(value) {
     if (this.data.system.sysinfo.relay_state === 1) {
       this.onSince = value;
     }

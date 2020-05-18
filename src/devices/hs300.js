@@ -1,19 +1,18 @@
-'use strict';
-
+/* eslint-disable no-underscore-dangle */
+const debug = require('debug');
 const defaultsDeep = require('lodash.defaultsdeep');
 
 const utils = require('../utils');
-const errCode = utils.errCode;
-const Hs = require('./hs');
 
-const debug = require('debug');
+const { errCode } = utils;
+const Hs = require('./hs');
 
 const defaultData = require('./data/hs300');
 
 const logDebug = debug('DEBUG');
 
 class Hs300 extends Hs {
-  constructor (data) {
+  constructor(data) {
     super(data);
     defaultsDeep(this.data, defaultData);
 
@@ -21,14 +20,15 @@ class Hs300 extends Hs {
 
     this.api['smartlife.iot.smartpowerstrip.manage'] = {
       get_relationship: errCode(() => {
-        const data = [];
-        let slot = 0;
-        for (var childId in this.data.children) {
-          data.push({ child_id: childId, hw_slot: slot });
-          slot++;
-        }
-        return { data };
-      })
+        let slot = -1;
+
+        return {
+          data: Object.keys(this.data.children).map((childId) => {
+            slot += 1;
+            return { child_id: childId, hw_slot: slot };
+          }),
+        };
+      }),
     };
 
     this.api.context.child_ids = errCode((children) => {
@@ -47,14 +47,17 @@ class Hs300 extends Hs {
     });
 
     this.api.netif.get_stainfo = errCode(() => {
-      return Object.assign({}, this.data.netif.stainfo, { rssi: this.data.system.sysinfo.rssi });
+      return {
+        ...this.data.netif.stainfo,
+        rssi: this.data.system.sysinfo.rssi,
+      };
     });
   }
 
-  initDefaults () {
+  initDefaults() {
     super.initDefaults();
 
-    for (var childId in this.data.children) {
+    Object.keys(this.data.children).forEach((childId) => {
       const child = this.data.children[childId];
       child.sysinfo.id = this.deviceId + childId;
       child.emeter = JSON.parse(JSON.stringify(this.data.emeter));
@@ -63,55 +66,54 @@ class Hs300 extends Hs {
       child.count_down = JSON.parse(JSON.stringify(this.data.count_down));
       this.data.children[child.sysinfo.id] = child;
       delete this.data.children[childId];
-    }
+    });
 
-    this.currentContext = this.data.children[this.deviceId + '00'];
+    this.currentContext = this.data.children[`${this.deviceId}00`];
   }
 
-  get currentContext () {
+  get currentContext() {
     logDebug('get currentContext', this._currentContext);
     return this._currentContext;
   }
-  set currentContext (child) {
+
+  set currentContext(child) {
     this._currentContext = child;
     logDebug('set currentContext', this._currentContext);
   }
 
-  get children () {
-    const children = [];
-    for (var childId in this.data.children) {
-      children.push(this.data.children[childId].sysinfo);
-    }
-    return children;
+  get children() {
+    return Object.keys(this.data.children).map((childId) => {
+      return this.data.children[childId].sysinfo;
+    });
   }
 
-  get sysinfo () {
+  get sysinfo() {
     const sysinfo = JSON.parse(JSON.stringify(this.data.system.sysinfo));
     sysinfo.children = JSON.parse(JSON.stringify(this.children));
     return sysinfo;
   }
 
-  get emeterContext () {
+  get emeterContext() {
     return this.currentContext.emeter;
   }
 
-  get scheduleContext () {
+  get scheduleContext() {
     return this.currentContext.schedule;
   }
 
-  get antiTheftContext () {
+  get antiTheftContext() {
     return this.currentContext.anti_theft;
   }
 
-  get countDownContext () {
+  get countDownContext() {
     return this.currentContext.count_down;
   }
 
-  get relayState () {
+  get relayState() {
     return this.currentContext.sysinfo.state;
   }
 
-  set relayState (relayState) {
+  set relayState(relayState) {
     this.currentContext.sysinfo.state = relayState;
   }
 }

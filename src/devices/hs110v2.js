@@ -1,5 +1,3 @@
-'use strict';
-
 const merge = require('lodash.merge');
 
 const Hs110 = require('./hs110');
@@ -7,7 +5,7 @@ const Hs110 = require('./hs110');
 const defaultData = require('./data/hs110v2');
 
 class Hs110v2 extends Hs110 {
-  constructor (data) {
+  constructor(data) {
     super(data);
     merge(this.data, defaultData);
 

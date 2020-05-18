@@ -1,5 +1,3 @@
-'use strict';
-
 const defaultsDeep = require('lodash.defaultsdeep');
 
 const lb = require('./lb');
@@ -26,7 +24,7 @@ const lb100 = {
 
       ctrl_protocols: {
         name: 'Linkie',
-        version: '1.0'
+        version: '1.0',
       },
 
       light_state: {
@@ -36,8 +34,8 @@ const lb100 = {
           hue: 0,
           saturation: 0,
           color_temp: 2700,
-          brightness: 100
-        }
+          brightness: 100,
+        },
       },
 
       preferred_state: [
@@ -46,33 +44,32 @@ const lb100 = {
           hue: 0,
           saturation: 0,
           color_temp: 2700,
-          brightness: 100
+          brightness: 100,
         },
         {
           index: 1,
           hue: 0,
           saturation: 0,
           color_temp: 2700,
-          brightness: 75
+          brightness: 75,
         },
         {
           index: 2,
           hue: 0,
           saturation: 0,
           color_temp: 2700,
-          brightness: 25
+          brightness: 25,
         },
         {
           index: 3,
           hue: 0,
           saturation: 0,
           color_temp: 2700,
-          brightness: 1
-        }
-      ]
-    }
-  }
-
+          brightness: 1,
+        },
+      ],
+    },
+  },
 };
 
 defaultsDeep(lb100, lb);

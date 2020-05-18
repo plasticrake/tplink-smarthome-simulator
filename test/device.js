@@ -1,25 +1,32 @@
 /* eslint-env mocha */
 /* eslint no-unused-expressions: ["off"] */
 
-'use strict';
-
 const chai = require('chai');
-const expect = chai.expect;
 
-const Device = require('../src').Device;
-const processCommands = require('../src/device').processCommands;
+const { expect } = chai;
+
+const { Device } = require('../src');
+const { processCommands } = require('../src/device');
 
 describe('Device', function () {
   this.retries(2);
 
   describe('constructor()', function () {
     it('accept options', function () {
-      var opt = { model: 'hs100', port: 1234, address: '127.0.0.1', data: { 'deviceId': 'ABC' } };
+      const opt = {
+        model: 'hs100',
+        port: 1234,
+        address: '127.0.0.1',
+        data: { deviceId: 'ABC' },
+      };
       const device = new Device(opt);
       expect(device).to.have.property('model', opt.model);
       expect(device).to.have.property('port', opt.port);
       expect(device).to.have.property('address', opt.address);
-      expect(device).to.have.nested.property('data.deviceId', opt.data.deviceId);
+      expect(device).to.have.nested.property(
+        'data.deviceId',
+        opt.data.deviceId
+      );
       expect(device.api).to.exist;
     });
     it('defaults', function () {
@@ -30,10 +37,14 @@ describe('Device', function () {
       expect(device.api).to.exist;
     });
     it('throw if no model', function () {
-      expect(() => { new Device(); }).to.throw(); // eslint-disable-line no-new
+      expect(() => {
+        new Device(); // eslint-disable-line no-new
+      }).to.throw();
     });
     it('throw if invalid model', function () {
-      expect(() => { new Device({ model: 'invalid_model' }); }).to.throw();// eslint-disable-line no-new
+      expect(() => {
+        new Device({ model: 'invalid_model' }); // eslint-disable-line no-new
+      }).to.throw();
     });
 
     Device.models.forEach((model) => {
@@ -57,8 +68,8 @@ describe('Device', function () {
         system: {
           get_sysinfo: () => {
             return { alias: 'test' };
-          }
-        }
+          },
+        },
       };
     });
 
@@ -106,33 +117,39 @@ describe('Device', function () {
         );
         expect(results).to.eql(
           JSON.stringify({
-            system_invalid: { err_code: -1, err_msg: 'module not support' }
+            system_invalid: { err_code: -1, err_msg: 'module not support' },
           })
         );
       });
 
       it('should result in err_code -1 with invalid module (with other valid command)', function () {
         const results = processCommands(
-          JSON.stringify({ system_invalid: { get_sysinfo: {} }, system: { get_sysinfo: {} } }),
+          JSON.stringify({
+            system_invalid: { get_sysinfo: {} },
+            system: { get_sysinfo: {} },
+          }),
           api
         );
         expect(results).to.eql(
           JSON.stringify({
             system_invalid: { err_code: -1, err_msg: 'module not support' },
-            system: { 'get_sysinfo': api.system.get_sysinfo() }
+            system: { get_sysinfo: api.system.get_sysinfo() },
           })
         );
       });
 
       it('should result in err_code -1 with invalid module with two methods (with other valid command)', function () {
         const results = processCommands(
-          JSON.stringify({ system_invalid: { get_sysinfo: {}, another_method: {} }, system: { get_sysinfo: {} } }),
+          JSON.stringify({
+            system_invalid: { get_sysinfo: {}, another_method: {} },
+            system: { get_sysinfo: {} },
+          }),
           api
         );
         expect(results).to.eql(
           JSON.stringify({
             system_invalid: { err_code: -1, err_msg: 'module not support' },
-            system: { 'get_sysinfo': api.system.get_sysinfo() }
+            system: { get_sysinfo: api.system.get_sysinfo() },
           })
         );
       });
@@ -147,9 +164,9 @@ describe('Device', function () {
             system: {
               get_sysinfo_invalid: {
                 err_code: -2,
-                err_msg: 'member not support'
-              }
-            }
+                err_msg: 'member not support',
+              },
+            },
           })
         );
       });

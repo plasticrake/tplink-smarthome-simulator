@@ -1,5 +1,3 @@
-'use strict';
-
 const EventEmitter = require('events');
 const dgram = require('dgram');
 const debug = require('debug');
@@ -10,7 +8,7 @@ UdpServer.setMaxListeners(25);
 const log = debug('udp-server');
 const logErr = debug('udp-server:error');
 
-UdpServer.start = function ({ port = 9999 } = {}) {
+UdpServer.start = function start({ port = 9999 } = {}) {
   const self = UdpServer;
   self.socketBound = false;
 
@@ -43,7 +41,7 @@ UdpServer.start = function ({ port = 9999 } = {}) {
   });
 };
 
-UdpServer.stop = function () {
+UdpServer.stop = function stop() {
   const self = UdpServer;
   if (self.socketBound) {
     self.socket.close();

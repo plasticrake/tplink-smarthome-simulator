@@ -1,37 +1,34 @@
-'use strict';
-
+/* eslint-disable no-underscore-dangle */
 const { encrypt, encryptWithHeader } = require('tplink-smarthome-crypto');
 
-const {
-  parseJsonStream,
-  randomInt
-} = require('./utils');
+const { processCommands, unreliableData } = require('./utils');
 const DeviceNetworking = require('./device-networking');
 
 class Device {
-  constructor ({
+  constructor({
     model,
     port = 0,
     address = '0.0.0.0',
     alias,
     responseDelay = 0,
     unreliablePercent = 0,
-    data = {}
+    data = {},
   } = {}) {
     this.deviceNetworking = new DeviceNetworking({
       device: this,
       model,
       port,
       address,
-      responseDelay
+      responseDelay,
     });
 
     this.model = model;
-    this.data = Object.assign({}, data);
+    this.data = { ...data };
     this.data.model = model;
     if (alias != null) this.data.alias = alias;
 
-    let SpecificDevice = require(`./devices/${model}`);
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    const SpecificDevice = require(`./devices/${model}`);
     this._deviceInfo = new SpecificDevice(this.data);
     this._deviceInfo.initDefaults();
     this.api = this._deviceInfo.api;
@@ -40,27 +37,27 @@ class Device {
     this.unreliablePercent = unreliablePercent;
   }
 
-  get address () {
+  get address() {
     return this.deviceNetworking.address;
   }
 
-  get port () {
+  get port() {
     return this.deviceNetworking.port;
   }
 
-  async start () {
+  async start() {
     return this.deviceNetworking.start();
   }
 
-  async stop () {
+  async stop() {
     return this.deviceNetworking.stop();
   }
 
-  get children () {
+  get children() {
     return this._deviceInfo.children;
   }
 
-  processMessage (msg, encryptFn, customizerFn) {
+  processMessage(msg, encryptFn, customizerFn) {
     const responseObj = processCommands(msg, this.api, customizerFn);
     let responseJson;
     let response;
@@ -76,7 +73,7 @@ class Device {
     return { response, responseForLog: responseJson };
   }
 
-  processUdpMessage (msg) {
+  processUdpMessage(msg) {
     return this.processMessage(msg, encrypt, (obj) => {
       // UDP only returns last two characters of child.id
       if (
@@ -85,16 +82,16 @@ class Device {
         obj.system.get_sysinfo.children &&
         obj.system.get_sysinfo.children.length > 0
       ) {
-        obj.system.get_sysinfo.children.map((child) => {
+        obj.system.get_sysinfo.children.forEach((child) => {
+          // eslint-disable-next-line no-param-reassign
           child.id = child.id.slice(-2);
-          return child;
         });
       }
       return obj;
     });
   }
 
-  processTcpMessage (msg) {
+  processTcpMessage(msg) {
     return this.processMessage(msg, encryptWithHeader);
   }
 }
@@ -109,107 +106,7 @@ Device.models = [
   'hs300',
   'lb100',
   'lb120',
-  'lb130'
+  'lb130',
 ];
-
-const unreliableData = function (unreliablePercent) {
-  if (unreliablePercent > 0 && Math.random() < unreliablePercent) {
-    let bufLength = randomInt(0, 255);
-    let buf = Buffer.alloc(bufLength);
-    for (var i = 0; i < buf.length; i++) {
-      buf[i] = randomInt(0, 255);
-    }
-    return buf;
-  }
-};
-
-const processCommands = function (json, api, customizerFn) {
-  if (customizerFn == null) {
-    customizerFn = (moduleName, methodName, methodResponse) => {
-      return methodResponse;
-    };
-  }
-  const response = [];
-
-  const commandFragments = parseJsonStream(json);
-  let contextResults;
-
-  // Run context command first (if found), save other commands for after
-  for (const module of commandFragments) {
-    if (module.name === 'context') {
-      let childIds = module.methods.find((v) => v.method === 'child_ids');
-      if (childIds !== undefined) {
-        contextResults = api.context.child_ids(childIds);
-        break;
-      }
-    }
-  }
-
-  for (const module of commandFragments) {
-    if (api[module.name]) {
-      for (const method of module.methods) {
-        if (typeof api[module.name][method.name] === 'function') {
-          if (module.name === 'context' && method.name === 'child_ids') {
-            method.results = contextResults;
-          } else {
-            method.results = customizerFn(
-              module.name,
-              method.name,
-              api[module.name][method.name](method.args)
-            );
-          }
-        } else {
-          method.results = { err_code: -2, err_msg: 'member not support' };
-        }
-      }
-    } else {
-      module.results = { err_code: -1, err_msg: 'module not support' };
-    }
-
-    if (module.results) {
-      response.push(`"${module.name}":${JSON.stringify(module.results)}`);
-    } else {
-      const methodsResponse = module.methods.map((method) => {
-        return `"${method.name}":${JSON.stringify(method.results)}`;
-      });
-
-      response.push(`"${module.name}":{${methodsResponse.join(',')}}`);
-    }
-  }
-
-  return `{${response.join(',')}}`;
-};
-
-// const processCommand = function (command, api, depth = 0) {
-//   let results = {};
-//   let keys = Object.keys(command);
-
-//   // if includes context, call it first so rest of commands will have context set
-//   if (depth === 0 && command.context && command.context.child_ids) {
-//     let contextResults = api.context.child_ids(command.context.child_ids);
-//     if (contextResults.err_code !== 0) {
-//       results['context'] = contextResults;
-//     }
-//   }
-
-//   for (var i = 0; i < keys.length; i++) {
-//     let key = keys[i];
-//     if (key === 'context') {
-//       continue; // already processed above
-//     }
-//     if (typeof api[key] === 'function') {
-//       results[key] = api[key](command[key]);
-//     } else if (api[key]) {
-//       results[key] = processCommand(command[key], api[key], depth + 1);
-//     } else {
-//       if (depth === 0) {
-//         results[key] = { err_code: -1, err_msg: 'module not support' };
-//       } else {
-//         results[key] = { err_code: -2, err_msg: 'member not support' };
-//       }
-//     }
-//   }
-//   return results;
-// };
 
 module.exports = { Device, processCommands };

@@ -1,5 +1,3 @@
-'use strict';
-
 const defaultsDeep = require('lodash.defaultsdeep');
 
 const lb100 = require('./lb100');
@@ -15,10 +13,9 @@ const lb120 = {
 
       is_dimmable: 1,
       is_color: 0,
-      is_variable_color_temp: 1
-
-    }
-  }
+      is_variable_color_temp: 1,
+    },
+  },
 };
 defaultsDeep(lb120, lb100);
 

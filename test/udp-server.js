@@ -1,12 +1,11 @@
 /* eslint-env mocha */
 /* eslint no-unused-expressions: ["off"] */
 
-'use strict';
-
 const chai = require('chai');
-const expect = chai.expect;
 
-const UdpServer = require('../src').UdpServer;
+const { expect } = chai;
+
+const { UdpServer } = require('../src');
 
 describe('UdpServer', function () {
   this.retries(2);

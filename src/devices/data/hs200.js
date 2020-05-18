@@ -1,8 +1,6 @@
-'use strict';
-
 const hs = require('./hs');
 
-const hs220 = Object.assign({}, hs);
+const hs220 = { ...hs };
 module.exports = hs220;
 
 Object.assign(hs220, {
@@ -20,7 +18,7 @@ Object.assign(hs220, {
       feature: 'TIM',
       updating: 0,
       rssi: -65,
-      led_off: 0
-    }
-  }
+      led_off: 0,
+    },
+  },
 });

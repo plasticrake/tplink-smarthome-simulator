@@ -1,8 +1,6 @@
-'use strict';
-
 const hs = require('./hs');
 
-const hs220 = Object.assign({}, hs);
+const hs220 = { ...hs };
 module.exports = hs220;
 
 Object.assign(hs220, {
@@ -27,9 +25,9 @@ Object.assign(hs220, {
         { index: 0, brightness: 100 },
         { index: 1, brightness: 75 },
         { index: 2, brightness: 50 },
-        { index: 3, brightness: 25 }
-      ]
-    }
+        { index: 3, brightness: 25 },
+      ],
+    },
   },
 
   dimmer_parameters: {
@@ -39,14 +37,13 @@ Object.assign(hs220, {
     gentleOnTime: 3000,
     gentleOffTime: 510000,
     rampRate: 30,
-    bulb_type: 1
+    bulb_type: 1,
   },
 
   default_behavior: {
     soft_on: { mode: 'last_status' },
     hard_on: { mode: 'last_status' },
     long_press: { mode: 'instant_on_off' },
-    double_click: { mode: 'gentle_on_off' }
-  }
-
+    double_click: { mode: 'gentle_on_off' },
+  },
 });
