@@ -1,8 +1,17 @@
+"use strict";
+
 const EventEmitter = require('events');
+
 const dgram = require('dgram');
+
 const net = require('net');
+
 const debug = require('debug');
-const { decrypt, decryptWithHeader } = require('tplink-smarthome-crypto');
+
+const {
+  decrypt,
+  decryptWithHeader
+} = require('tplink-smarthome-crypto');
 
 const UdpServer = require('./udp-server');
 
@@ -18,7 +27,7 @@ class DeviceNetworking extends EventEmitter {
     model,
     port = 0,
     address = '0.0.0.0',
-    responseDelay = 0,
+    responseDelay = 0
   } = {}) {
     super();
     this.device = device;
@@ -26,7 +35,6 @@ class DeviceNetworking extends EventEmitter {
     this.port = port;
     this.address = address;
     this.responseDelay = responseDelay;
-
     this.serverBound = false;
     this.udpSocketBound = false;
   }
@@ -39,16 +47,17 @@ class DeviceNetworking extends EventEmitter {
       protocol: 'udp',
       message: decryptedMsg,
       remoteAddress: rinfo.address,
-      remotePort: rinfo.port,
+      remotePort: rinfo.port
     });
     logUdp(decryptedMsg);
-
     let response;
     let responseForLog;
+
     try {
-      ({ response, responseForLog } = this.device.processUdpMessage(
-        decryptedMsg
-      ));
+      ({
+        response,
+        responseForLog
+      } = this.device.processUdpMessage(decryptedMsg));
     } catch (err) {
       logUdpErr('processUdpMessage, could not process:', decryptedMsg);
       logUdpErr(err);
@@ -58,39 +67,22 @@ class DeviceNetworking extends EventEmitter {
 
     if (response !== undefined) {
       setTimeout(() => {
-        logUdp(
-          '[%s] UDP responding, delay:%s,',
-          this.model,
-          this.responseDelay,
-          rinfo.port,
-          rinfo.address
-        );
+        logUdp('[%s] UDP responding, delay:%s,', this.model, this.responseDelay, rinfo.port, rinfo.address);
         logUdp(responseForLog);
         this.emit('response', {
           time: Date.now(),
           protocol: 'tcp',
           message: responseForLog,
           remoteAddress: rinfo.address,
-          remotePort: rinfo.port,
-        });
-        this.udpSocket.send(
-          response,
-          0,
-          response.length,
-          rinfo.port,
-          rinfo.address
-        );
+          remotePort: rinfo.port
+        }, 500);
+        this.udpSocket.send(response, 0, response.length, rinfo.port, rinfo.address);
       }, this.responseDelay);
     }
   }
 
   processTcpMessage(msg, socket) {
-    logTcp(
-      '[%s] TCP DATA',
-      this.model,
-      socket.remoteAddress,
-      socket.remotePort
-    );
+    logTcp('[%s] TCP DATA', this.model, socket.remoteAddress, socket.remotePort);
     const decryptedMsg = decryptWithHeader(msg).toString('utf8');
     logTcp(decryptedMsg);
     this.emit('data', {
@@ -100,15 +92,16 @@ class DeviceNetworking extends EventEmitter {
       localAddress: socket.localAddress,
       localPort: socket.localPort,
       remoteAddress: socket.remoteAddress,
-      remotePort: socket.remotePort,
+      remotePort: socket.remotePort
     });
-
     let response;
     let responseForLog;
+
     try {
-      ({ response, responseForLog } = this.device.processTcpMessage(
-        decryptedMsg
-      ));
+      ({
+        response,
+        responseForLog
+      } = this.device.processTcpMessage(decryptedMsg));
     } catch (err) {
       logTcpErr('processTcpMessage, could not process:', decryptedMsg);
       logTcpErr(err);
@@ -118,12 +111,7 @@ class DeviceNetworking extends EventEmitter {
 
     if (response !== undefined) {
       setTimeout(() => {
-        logTcp(
-          '[%s] TCP responding, delay:%s,',
-          this.model,
-          this.responseDelay,
-          socket.address()
-        );
+        logTcp('[%s] TCP responding, delay:%s,', this.model, this.responseDelay, socket.address());
         logTcp(responseForLog);
         this.emit('response', {
           time: Date.now(),
@@ -132,9 +120,10 @@ class DeviceNetworking extends EventEmitter {
           localAddress: socket.localAddress,
           localPort: socket.localPort,
           remoteAddress: socket.remoteAddress,
-          remotePort: socket.remotePort,
-        });
+          remotePort: socket.remotePort
+        }, 500);
         socket.write(response);
+
         if (this.device.endSocketAfterResponse) {
           socket.end();
         }
@@ -147,11 +136,11 @@ class DeviceNetworking extends EventEmitter {
       try {
         let udpAddress;
         let retryCount = 0;
-        this.server = net.createServer((socket) => {
-          socket.on('data', (chunk) => {
+        this.server = net.createServer(socket => {
+          socket.on('data', chunk => {
             this.processTcpMessage(chunk, socket);
           });
-          socket.on('error', (err) => {
+          socket.on('error', err => {
             this.emit('error', err);
           });
           socket.on('end', () => {
@@ -166,48 +155,50 @@ class DeviceNetworking extends EventEmitter {
           log('[%s] TCP server bound', this.model, tcpAddress);
           resolve(this);
         });
-        this.server.on('error', (err) => {
+        this.server.on('error', err => {
           logTcpErr(err);
-          if (
-            err.code === 'EADDRINUSE' &&
-            udpAddress != null &&
-            retryCount < 2
-          ) {
+
+          if (err.code === 'EADDRINUSE' && udpAddress != null && retryCount < 2) {
             retryCount += 1;
             logTcpErr('Address in use, retrying...');
             setTimeout(() => {
               this.server.close();
-              this.server.listen({ port: udpAddress.port, host: this.address });
+              this.server.listen({
+                port: udpAddress.port,
+                host: this.address
+              });
             }, 500);
             return;
           }
+
           reject(err);
-        });
+        }); // bind to UDP then TCP and share port
 
-        // bind to UDP then TCP and share port
-        this.udpSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+        this.udpSocket = dgram.createSocket({
+          type: 'udp4',
+          reuseAddr: true
+        }); // Save to call removeListener on #stop()
 
-        // Save to call removeListener on #stop()
         this.udpCb = (msg, rinfo) => {
           this.processUdpMessage(msg, rinfo);
         };
 
         UdpServer.on('message', this.udpCb);
-
         this.udpSocket.on('message', this.udpCb);
-
-        this.udpSocket.on('error', (exception) => {
+        this.udpSocket.on('error', exception => {
           logUdpErr(exception);
           this.udpSocket.close();
           this.udpSocketBound = false;
           reject(exception);
         });
-
         this.udpSocket.bind(this.port, this.address, () => {
           this.udpSocketBound = true;
           udpAddress = this.udpSocket.address();
           log('[%s] UDP bound', this.model, udpAddress);
-          this.server.listen({ port: udpAddress.port, host: this.address });
+          this.server.listen({
+            port: udpAddress.port,
+            host: this.address
+          });
         });
       } catch (err) {
         reject(err);
@@ -216,14 +207,16 @@ class DeviceNetworking extends EventEmitter {
   }
 
   async stop() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (typeof this.udpCb === 'function') {
         UdpServer.removeListener('message', this.udpCb);
       }
+
       if (this.udpSocketBound) {
         this.udpSocket.close();
         this.udpSocketBound = false;
       }
+
       if (this.serverBound) {
         this.server.close(() => {
           this.serverBound = false;
@@ -234,6 +227,7 @@ class DeviceNetworking extends EventEmitter {
       }
     });
   }
+
 }
 
 module.exports = DeviceNetworking;

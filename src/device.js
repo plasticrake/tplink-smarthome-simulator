@@ -1,3 +1,5 @@
+"use strict";
+
 /* eslint-disable no-underscore-dangle */
 const { encrypt, encryptWithHeader } = require('tplink-smarthome-crypto');
 
@@ -19,21 +21,22 @@ class Device {
       model,
       port,
       address,
-      responseDelay,
+      responseDelay
     });
-
     this.model = model;
-    this.data = { ...data };
+    this.data = { ...data
+    };
     this.data.model = model;
-    if (alias != null) this.data.alias = alias;
+    if (alias != null) this.data.alias = alias; // eslint-disable-next-line global-require, import/no-dynamic-require
 
-    // eslint-disable-next-line global-require, import/no-dynamic-require
     const SpecificDevice = require(`./devices/${model}`);
+
     this._deviceInfo = new SpecificDevice(this.data);
+
     this._deviceInfo.initDefaults();
+
     this.api = this._deviceInfo.api;
     this.data = this._deviceInfo.data;
-
     this.unreliablePercent = unreliablePercent;
   }
 
@@ -62,31 +65,36 @@ class Device {
     let responseJson;
     let response;
     const badData = unreliableData(this.unreliablePercent);
+
     if (badData !== undefined) {
       responseJson = badData;
       response = badData;
     } else if (responseObj) {
-      responseJson = JSON.stringify(responseObj);
+      /* dpt - take this out.  It was already JSON -  
+      responseJson = JSON.stringify(responseObj);*/
+      responseJson = responseObj;  
       response = encryptFn(responseJson);
     }
 
-    return { response, responseForLog: responseJson };
+    return {
+      response,
+      responseForLog: responseJson
+    };
   }
 
   processUdpMessage(msg) {
-    return this.processMessage(msg, encrypt, (obj) => {
+    // DPT: Changed the line below from this:
+    //     return this.processMessage(msg, encrypt, (obj) => {
+      
+    return this.processMessage(msg, encrypt, (modulename, methodname, obj) => {
       // UDP only returns last two characters of child.id
-      if (
-        obj.system &&
-        obj.system.get_sysinfo &&
-        obj.system.get_sysinfo.children &&
-        obj.system.get_sysinfo.children.length > 0
-      ) {
-        obj.system.get_sysinfo.children.forEach((child) => {
+      if (obj.system && obj.system.get_sysinfo && obj.system.get_sysinfo.children && obj.system.get_sysinfo.children.length > 0) {
+        obj.system.get_sysinfo.children.forEach(child => {
           // eslint-disable-next-line no-param-reassign
           child.id = child.id.slice(-2);
         });
       }
+
       return obj;
     });
   }
@@ -94,19 +102,11 @@ class Device {
   processTcpMessage(msg) {
     return this.processMessage(msg, encryptWithHeader);
   }
+
 }
 
-Device.models = [
-  'hs100',
-  'hs105',
-  'hs110',
-  'hs110v2',
-  'hs200',
-  'hs220',
-  'hs300',
-  'lb100',
-  'lb120',
-  'lb130',
-];
-
-module.exports = { Device, processCommands };
+Device.models = ['hs100', 'hs105', 'hs110', 'hs110v2', 'hs200', 'hs220', 'hs300', 'lb100', 'lb120', 'lb130'];
+module.exports = {
+  Device,
+  processCommands
+};
