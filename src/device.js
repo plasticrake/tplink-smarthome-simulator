@@ -58,19 +58,16 @@ class Device {
   }
 
   processMessage(msg, encryptFn, customizerFn) {
-    const responseObj = processCommands(msg, this.api, customizerFn);
-    let responseJson;
-    let response;
+    let responseUnencrypted = processCommands(msg, this.api, customizerFn);
+    let response = encryptFn(responseUnencrypted);
+
     const badData = unreliableData(this.unreliablePercent);
     if (badData !== undefined) {
-      responseJson = badData;
+      responseUnencrypted = badData;
       response = badData;
-    } else if (responseObj) {
-      responseJson = JSON.stringify(responseObj);
-      response = encryptFn(responseJson);
     }
 
-    return { response, responseForLog: responseJson };
+    return { response, responseForLog: responseUnencrypted };
   }
 
   processUdpMessage(msg) {
