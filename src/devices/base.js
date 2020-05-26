@@ -118,22 +118,10 @@ class Base {
     this.data.system.sysinfo.longitude_i = Math.round(value * 10000);
   }
 
-  get mac() {
-    return this.data.system.sysinfo.mac;
-  }
-
-  set mac(value) {
-    this.data.system.sysinfo.mac = value;
-  }
-
   initDefaults() {
     this.alias = this.data.alias || `Mock ${this.data.model}`;
     if (this.data.deviceId) this.deviceId = this.data.deviceId;
-    if (this.data.mac) this.mac = this.data.mac;
 
-    if (!this.mac) {
-      this.mac = utils.randomMac();
-    }
     if (!this.deviceId) {
       this.deviceId = utils.generateId(40);
     }

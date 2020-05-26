@@ -349,6 +349,14 @@ class Hs extends Base {
     return this.data.count_down;
   }
 
+  get mac() {
+    return this.data.system.sysinfo.mac;
+  }
+
+  set mac(value) {
+    this.data.system.sysinfo.mac = value;
+  }
+
   get onTime() {
     if (this.relayState === 1) {
       return Math.round((Date.now() - this.onSince) / 1000); // in seconds
@@ -359,6 +367,16 @@ class Hs extends Base {
   set onTime(value) {
     if (this.data.system.sysinfo.relay_state === 1) {
       this.onSince = value;
+    }
+  }
+
+  initDefaults() {
+    super.initDefaults();
+
+    if (this.data.mac) this.mac = this.data.mac;
+
+    if (!this.mac) {
+      this.mac = utils.randomMac();
     }
   }
 }

@@ -3,12 +3,14 @@ const defaultsDeep = require('lodash.defaultsdeep');
 const utils = require('../utils');
 
 const { errCode } = utils;
+const Base = require('./base');
 const Hs = require('./hs');
 
 const defaultData = require('./data/base');
 
-class Lb {
+class Lb extends Base {
   constructor(data) {
+    super(data);
     this.hs = new Hs(data);
     this.data = defaultsDeep(data, defaultData);
 
@@ -105,7 +107,13 @@ class Lb {
   }
 
   initDefaults() {
-    this.hs.initDefaults();
+    super.initDefaults();
+
+    if (this.data.mac) this.mac = this.data.mac;
+
+    if (!this.mac) {
+      this.mac = utils.randomMac();
+    }
   }
 }
 
