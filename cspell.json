@@ -19,6 +19,7 @@
     "ssid",
     "subnet",
     "truthy",
+    "unencrypted",
     "wifi",
 
     "SNDBUF",

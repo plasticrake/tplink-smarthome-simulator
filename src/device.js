@@ -71,21 +71,26 @@ class Device {
   }
 
   processUdpMessage(msg) {
-    return this.processMessage(msg, encrypt, (obj) => {
-      // UDP only returns last two characters of child.id
-      if (
-        obj.system &&
-        obj.system.get_sysinfo &&
-        obj.system.get_sysinfo.children &&
-        obj.system.get_sysinfo.children.length > 0
-      ) {
-        obj.system.get_sysinfo.children.forEach((child) => {
-          // eslint-disable-next-line no-param-reassign
-          child.id = child.id.slice(-2);
-        });
+    return this.processMessage(
+      msg,
+      encrypt,
+      (moduleName, methodName, methodResponse) => {
+        // UDP only returns last two characters of child.id
+        if (
+          moduleName === 'system' &&
+          methodName === 'get_sysinfo' &&
+          methodResponse &&
+          methodResponse.children &&
+          methodResponse.children.length > 0
+        ) {
+          methodResponse.children.forEach((child) => {
+            // eslint-disable-next-line no-param-reassign
+            child.id = child.id.slice(-2);
+          });
+        }
+        return methodResponse;
       }
-      return obj;
-    });
+    );
   }
 
   processTcpMessage(msg) {
