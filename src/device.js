@@ -58,7 +58,13 @@ class Device {
   }
 
   processMessage(msg, encryptFn, customizerFn) {
-    let responseUnencrypted = processCommands(msg, this.api, customizerFn);
+    this._deviceInfo.reset();
+    let responseUnencrypted = processCommands(
+      msg,
+      this.api,
+      this._deviceInfo.constructor.errors,
+      customizerFn
+    );
     let response = encryptFn(responseUnencrypted);
 
     const badData = unreliableData(this.unreliablePercent);

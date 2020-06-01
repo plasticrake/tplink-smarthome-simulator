@@ -2,11 +2,16 @@
 /* eslint no-unused-expressions: ["off"] */
 
 const chai = require('chai');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 
 const { expect } = chai;
 
 const { Device } = require('../src');
 const { processCommands } = require('../src/device');
+const Hs = require('../src/devices/hs');
+
+chai.use(sinonChai);
 
 describe('Device', function () {
   this.retries(2);
@@ -63,7 +68,10 @@ describe('Device', function () {
   describe('private', function () {
     this.retries(0);
     let api;
-    before(function () {
+    let apiWithContext;
+    const contextSpy = sinon.spy();
+
+    this.beforeEach(function () {
       api = {
         system: {
           get_sysinfo: () => {
@@ -71,9 +79,75 @@ describe('Device', function () {
           },
         },
       };
+      apiWithContext = {
+        system: {
+          get_sysinfo: () => {
+            return { alias: 'test' };
+          },
+        },
+        context: { child_ids: contextSpy },
+      };
+    });
+
+    this.afterEach(function () {
+      sinon.reset();
     });
 
     describe('processCommands', function () {
+      describe('context', function () {
+        it('should get command results and ignore context when method does not support', function () {
+          const results = processCommands(
+            JSON.stringify({
+              system: { get_sysinfo: {} },
+              context: { child_ids: ['01'] },
+            }),
+            api
+          );
+          expect(results).to.eql(
+            JSON.stringify({
+              system: { get_sysinfo: api.system.get_sysinfo() },
+            })
+          );
+        });
+
+        it('should get command results and ignore context when method does not support, error for additional context', function () {
+          const results = processCommands(
+            '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]}}',
+            api,
+            Hs.errors
+          );
+          expect(results).to.eql(
+            JSON.stringify({
+              system: { get_sysinfo: api.system.get_sysinfo() },
+              context: { err_code: -1, err_msg: 'module not support' },
+            })
+          );
+        });
+
+        it('should get command results and ignore context when method does not support, error for multiple additional context', function () {
+          const results = processCommands(
+            '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]},"context":{"child_ids":["03"]}}',
+            api,
+            Hs.errors
+          );
+          expect(results).to.eql(
+            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}'
+          );
+        });
+
+        it('should get command results, error for multiple additional context', function () {
+          const results = processCommands(
+            '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]},"context":{"child_ids":["03"]}}',
+            apiWithContext,
+            Hs.errors
+          );
+          expect(results).to.eql(
+            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}'
+          );
+          expect(contextSpy).to.be.calledOnceWithExactly(['01']);
+        });
+      });
+
       it('should get command results', function () {
         const results = processCommands(
           JSON.stringify({ system: { get_sysinfo: {} } }),
@@ -113,7 +187,8 @@ describe('Device', function () {
       it('should result in err_code -1 with invalid module', function () {
         const results = processCommands(
           JSON.stringify({ system_invalid: { get_sysinfo: {} } }),
-          api
+          api,
+          Hs.errors
         );
         expect(results).to.eql(
           JSON.stringify({
@@ -128,7 +203,8 @@ describe('Device', function () {
             system_invalid: { get_sysinfo: {} },
             system: { get_sysinfo: {} },
           }),
-          api
+          api,
+          Hs.errors
         );
         expect(results).to.eql(
           JSON.stringify({
@@ -144,7 +220,8 @@ describe('Device', function () {
             system_invalid: { get_sysinfo: {}, another_method: {} },
             system: { get_sysinfo: {} },
           }),
-          api
+          api,
+          Hs.errors
         );
         expect(results).to.eql(
           JSON.stringify({
@@ -157,7 +234,8 @@ describe('Device', function () {
       it('should result in err_code -2 with invalid member', function () {
         const results = processCommands(
           JSON.stringify({ system: { get_sysinfo_invalid: {} } }),
-          api
+          api,
+          Hs.errors
         );
         expect(results).to.eql(
           JSON.stringify({

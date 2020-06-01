@@ -31,20 +31,34 @@ class Hs300 extends Hs {
       }),
     };
 
-    this.api.context.child_ids = errCode((children) => {
-      logDebug('context.child_ids', children);
-      if (children == null || !Array.isArray(children)) {
-        throw { err_code: -3, err_msg: 'invalid argument' }; // eslint-disable-line no-throw-literal
-      }
-      if (children.length === 0) {
+    this.api.context.child_ids = (childIds) => {
+      logDebug('context.child_ids', childIds);
+      this.currentContext = [];
+
+      if (childIds == null || !Array.isArray(childIds)) {
+        this.contextError = this.constructor.error.INVALID_ARGUMENT;
         return;
       }
-      const childId = children[0];
-      this.currentContext = this.data.children[childId];
-      if (this.currentContext == null) {
-        throw { err_code: -14, err_msg: 'entry not exist' }; // eslint-disable-line no-throw-literal
+      if (childIds.length === 0) {
+        return;
       }
-    });
+
+      for (const childId of childIds) {
+        if (
+          childId in this.data.children &&
+          this.data.children[childId] != null
+        ) {
+          this.currentContext.push(this.data.children[childId]);
+        } else {
+          this.contextError = { err_code: -14, err_msg: 'entry not exist' };
+          return;
+        }
+      }
+
+      if (this.currentContext.length === 0) {
+        this.contextError = { err_code: -14, err_msg: 'entry not exist' };
+      }
+    };
 
     this.api.netif.get_stainfo = errCode(() => {
       return {
@@ -67,8 +81,6 @@ class Hs300 extends Hs {
       this.data.children[child.sysinfo.id] = child;
       delete this.data.children[childId];
     });
-
-    this.currentContext = this.data.children[`${this.deviceId}00`];
   }
 
   get currentContext() {
@@ -83,38 +95,64 @@ class Hs300 extends Hs {
 
   get children() {
     return Object.keys(this.data.children).map((childId) => {
+      return this.data.children[childId];
+    });
+  }
+
+  get sysinfoChildren() {
+    return Object.keys(this.data.children).map((childId) => {
       return this.data.children[childId].sysinfo;
     });
   }
 
   get sysinfo() {
     const sysinfo = JSON.parse(JSON.stringify(this.data.system.sysinfo));
-    sysinfo.children = JSON.parse(JSON.stringify(this.children));
+    sysinfo.children = JSON.parse(JSON.stringify(this.sysinfoChildren));
     return sysinfo;
   }
 
   get emeterContext() {
-    return this.currentContext.emeter;
+    return this.contextFirst.emeter;
   }
 
   get scheduleContext() {
-    return this.currentContext.schedule;
+    return this.contextFirst.schedule;
   }
 
   get antiTheftContext() {
-    return this.currentContext.anti_theft;
+    return this.contextFirst.anti_theft;
   }
 
   get countDownContext() {
-    return this.currentContext.count_down;
+    return this.contextFirst.count_down;
   }
 
   get relayState() {
-    return this.currentContext.sysinfo.state;
+    return this.contextFirst.sysinfo.state;
+  }
+
+  get contextDefaultAll() {
+    if (this.contextError) throw this.contextError;
+    if (this.currentContext == null) return this.children;
+    return this.currentContext;
+  }
+
+  get contextDefaultFirst() {
+    if (this.contextError) throw this.contextError;
+    if (this.currentContext == null) return [this.children[0]];
+    return this.currentContext;
+  }
+
+  get contextFirst() {
+    if (this.contextError) throw this.contextError;
+    if (this.currentContext == null) return this.children[0];
+    return this.currentContext[0];
   }
 
   set relayState(relayState) {
-    this.currentContext.sysinfo.state = relayState;
+    this.contextDefaultAll.forEach((ctx) => {
+      ctx.sysinfo.state = relayState;
+    });
   }
 }
 

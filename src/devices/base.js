@@ -50,15 +50,17 @@ class Base {
   }
 
   get alias() {
-    if (this.currentContext) {
-      return this.currentContext.sysinfo.alias;
+    if (this.currentContext && this.currentContext[0]) {
+      return this.currentContext[0].sysinfo.alias;
     }
     return this.data.system.sysinfo.alias;
   }
 
   set alias(value) {
-    if (this.currentContext) {
-      this.currentContext.sysinfo.alias = value;
+    if (this.contextError) throw this.contextError;
+
+    if (this.currentContext && this.currentContext[0]) {
+      this.currentContext[0].sysinfo.alias = value;
       return;
     }
     this.data.system.sysinfo.alias = value;
@@ -116,6 +118,11 @@ class Base {
   set longitude(value) {
     this.data.system.sysinfo.longitude = value;
     this.data.system.sysinfo.longitude_i = Math.round(value * 10000);
+  }
+
+  reset() {
+    this.currentContext = null;
+    this.contextError = null;
   }
 
   initDefaults() {

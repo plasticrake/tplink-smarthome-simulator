@@ -72,7 +72,30 @@ function parseJsonStream(json) {
   return results;
 }
 
-function processCommands(json, api, customizerFn) {
+/**
+ *
+ * Commands appear to be processed in order with the exception of "context.child_ids" which is handled specially.
+ *
+ * - When multiple duplicate commands are sent, the last command "wins":
+ *   `{"system":{"set_relay_state":{"state":0}},"system":{"set_relay_state":{"state":1}}}`
+ *   will turn on the relay
+ * - If multiple "context" modules are specified, the first is processed and not displayed in the output, the remaining items return an error:
+ *   `"context":{"err_code":-1,"err_msg":"module not support"}`
+ * - Devices that do not have multiple children will still silently ignore the first context found and all methods will still work
+ * - Some methods support multiple child_ids (`set_relay_state`), some only act on the first child_id (`set_dev_alias`)
+ * - `context:{}` or `context:[]` or `context:{"something_unexpected":[]}` has no effect, behaves as if no `context` was given (if first occurrence).
+ * - `context:""` crashes my device!
+ * - `context:{child_ids:{}}` or `context:{child_ids:[1]` will return `{ err_code: -3, err_msg: 'invalid argument' }` for commands that support child_id, but other commands will run as normal.
+ * - `context:{child_ids:[]}` will run commands that support child_id but they will have no effect (applied to zero children).
+ * - `context:{child_ids:["A"]}` will return `{ err_code: -14, err_msg: 'entry not exist' }` for commands that support child_id, but other commands will run as normal.
+ * - if any of the `child_ids` are invalid or don't exist commands that support `child_ids` will not run the valid ones and will return an `err_code`
+ *
+ * @param {string} json
+ * @param {Object} api
+ * @param {Function} [customizerFn]
+ * @returns {string}
+ */
+function processCommands(json, api, errors, customizerFn) {
   if (customizerFn == null) {
     // eslint-disable-next-line no-param-reassign
     customizerFn = (moduleName, methodName, methodResponse) => {
@@ -82,50 +105,53 @@ function processCommands(json, api, customizerFn) {
   const response = [];
 
   const commandFragments = parseJsonStream(json);
-  let contextResults;
 
   // Run context command first (if found), save other commands for after
-  for (const module of commandFragments) {
-    if (module.name === 'context') {
-      const childIds = module.methods.find((v) => v.method === 'child_ids');
-      if (childIds !== undefined) {
-        contextResults = api.context.child_ids(childIds);
-        break;
+  let foundFirstContext = false;
+  commandFragments
+    .reduce((acc, module) => {
+      if (module.name === 'context' && !foundFirstContext) {
+        foundFirstContext = true;
+        if ('context' in api && 'child_ids' in api.context) {
+          const childIds = module.methods.find((v) => v.name === 'child_ids')
+            .args;
+          if (childIds !== undefined) {
+            api.context.child_ids(childIds);
+          }
+        }
+      } else {
+        acc.push(module);
       }
-    }
-  }
-
-  for (const module of commandFragments) {
-    if (api[module.name]) {
-      for (const method of module.methods) {
-        if (typeof api[module.name][method.name] === 'function') {
-          if (module.name === 'context' && method.name === 'child_ids') {
-            method.results = contextResults;
-          } else {
+      return acc;
+    }, [])
+    .forEach((module) => {
+      if (api[module.name] && module.name !== 'context') {
+        for (const method of module.methods) {
+          if (typeof api[module.name][method.name] === 'function') {
             method.results = customizerFn(
               module.name,
               method.name,
               api[module.name][method.name](method.args)
             );
+          } else {
+            method.results = errors.METHOD_NOT_SUPPORT;
           }
-        } else {
-          method.results = { err_code: -2, err_msg: 'member not support' };
         }
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        module.results = errors.MODULE_NOT_SUPPORT;
       }
-    } else {
-      module.results = { err_code: -1, err_msg: 'module not support' };
-    }
 
-    if (module.results) {
-      response.push(`"${module.name}":${JSON.stringify(module.results)}`);
-    } else {
-      const methodsResponse = module.methods.map((method) => {
-        return `"${method.name}":${JSON.stringify(method.results)}`;
-      });
+      if (module.results) {
+        response.push(`"${module.name}":${JSON.stringify(module.results)}`);
+      } else {
+        const methodsResponse = module.methods.map((method) => {
+          return `"${method.name}":${JSON.stringify(method.results)}`;
+        });
 
-      response.push(`"${module.name}":{${methodsResponse.join(',')}}`);
-    }
-  }
+        response.push(`"${module.name}":{${methodsResponse.join(',')}}`);
+      }
+    });
 
   return `{${response.join(',')}}`;
 }
