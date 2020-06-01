@@ -2,16 +2,6 @@
   "name": "tplink-smarthome-simulator",
   "version": "1.10.0",
   "description": "TP-Link Smarthome Device Simulator",
-  "author": "Patrick Seal",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/plasticrake/tplink-smarthome-simulator.git"
-  },
-  "bugs": {
-    "url": "https://github.com/plasticrake/tplink-smarthome-simulator/issues",
-    "email": "code@plasticrake.com"
-  },
   "keywords": [
     "tplink",
     "kasa",
@@ -29,23 +19,30 @@
     "smartswitch",
     "smartbulb"
   ],
+  "bugs": {
+    "url": "https://github.com/plasticrake/tplink-smarthome-simulator/issues",
+    "email": "code@plasticrake.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/plasticrake/tplink-smarthome-simulator.git"
+  },
+  "license": "MIT",
+  "author": "Patrick Seal",
   "main": "lib/index.js",
   "files": [
     "lib"
   ],
   "scripts": {
-    "lint": "eslint --ignore-path .gitignore . --ext .js,.jsx,.ts,.tsx",
-    "test": "npm run lint && cross-env NODE_ENV=test nyc mocha",
-    "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
     "build": "./node_modules/.bin/babel src -d lib",
+    "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov",
+    "lint": "eslint --ignore-path .gitignore . --ext .js,.jsx,.ts,.tsx",
     "prepare": "npm run build",
-    "preversion": "npm test",
-    "postversion": "git push && git push --tags",
     "prerelease": "npm test && npm run build",
-    "release": "standard-version --sign"
-  },
-  "engines": {
-    "node": ">=10"
+    "release": "standard-version --sign",
+    "test": "npm run lint && cross-env NODE_ENV=test nyc mocha",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.2",
@@ -79,5 +76,8 @@
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "standard-version": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=10"
   }
 }
