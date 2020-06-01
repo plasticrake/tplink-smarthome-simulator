@@ -11,6 +11,15 @@ const Base = require('./base');
 const defaultData = require('./data/base');
 
 class Hs extends Base {
+  static get errors() {
+    return {
+      MODULE_NOT_SUPPORT: { err_code: -1, err_msg: 'module not support' },
+      METHOD_NOT_SUPPORT: { err_code: -2, err_msg: 'member not support' },
+      INVALID_ARGUMENT: { err_code: -3, err_msg: 'invalid argument' },
+      MISSING_ARGUMENT: { err_code: -3, err_msg: 'invalid argument' },
+    };
+  }
+
   constructor(data = {}) {
     super(data);
     defaultsDeep(this.data, defaultData);
@@ -38,13 +47,13 @@ class Hs extends Base {
       }),
       reboot: errCode(({ delay }) => {
         if (!Number.isInteger(delay)) {
-          throw { err_code: -3, err_msg: 'invalid argument' };
+          throw this.constructor.errors.INVALID_ARGUMENT;
         }
         return {};
       }),
       reset: errCode(({ delay }) => {
         if (!Number.isInteger(delay)) {
-          throw { err_code: -3, err_msg: 'invalid argument' };
+          throw this.constructor.errors.INVALID_ARGUMENT;
         }
         return {};
       }),

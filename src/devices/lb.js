@@ -9,6 +9,19 @@ const Hs = require('./hs');
 const defaultData = require('./data/base');
 
 class Lb extends Base {
+  static get errors() {
+    return {
+      MODULE_NOT_SUPPORT: { err_code: -2001, err_msg: 'Module not support' },
+      METHOD_NOT_SUPPORT: { err_code: -2000, err_msg: 'Method not support' },
+      INVALID_ARGUMENT: null,
+      MISSING_ARGUMENT: {
+        err_code: -10002,
+        /* cspell:disable-next-line */
+        err_msg: 'Missing neccesary argument',
+      },
+    };
+  }
+
   constructor(data) {
     super(data);
     this.hs = new Hs(data);
