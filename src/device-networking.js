@@ -26,6 +26,8 @@ class DeviceNetworking extends EventEmitter {
     this.port = port;
     this.address = address;
     this.responseDelay = responseDelay;
+    this.pending = 0;
+    this.closed = false;
 
     this.serverBound = false;
     this.udpSocketBound = false;
@@ -117,6 +119,7 @@ class DeviceNetworking extends EventEmitter {
     }
 
     if (response !== undefined) {
+      this.pending += 1;
       setTimeout(() => {
         logTcp(
           '[%s] TCP responding, delay:%s,',
@@ -135,7 +138,11 @@ class DeviceNetworking extends EventEmitter {
           remotePort: socket.remotePort,
         });
         socket.write(response);
-        if (this.device.endSocketAfterResponse) {
+        this.pending -= 1;
+        if (
+          this.device.endSocketAfterResponse ||
+          (this.pending === 0 && this.closed)
+        ) {
           socket.end();
         }
       }, this.responseDelay);
@@ -155,7 +162,10 @@ class DeviceNetworking extends EventEmitter {
             this.emit('error', err);
           });
           socket.on('end', () => {
-            socket.end();
+            this.closed = true;
+            if (this.pending === 0) {
+              socket.end();
+            }
           });
         });
         this.server.on('listening', () => {
