@@ -119,7 +119,7 @@ class DeviceNetworking extends EventEmitter {
     }
 
     if (response !== undefined) {
-      this.pending++;
+      this.pending += 1;
       setTimeout(() => {
         logTcp(
           '[%s] TCP responding, delay:%s,',
@@ -138,8 +138,11 @@ class DeviceNetworking extends EventEmitter {
           remotePort: socket.remotePort,
         });
         socket.write(response);
-        this.pending--;
-        if (this.device.endSocketAfterResponse || (this.pending === 0 && this.closed)) {
+        this.pending -= 1;
+        if (
+          this.device.endSocketAfterResponse ||
+          (this.pending === 0 && this.closed)
+        ) {
           socket.end();
         }
       }, this.responseDelay);
