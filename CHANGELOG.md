@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v2.0.0...v2.0.1) (2022-01-30)
+
+
+### Bug Fixes
+
+* set_gentle_*_time takes duration param ([b1a87a9](https://github.com/plasticrake/tplink-smarthome-simulator/commit/b1a87a983c38b1a8aeccb2b4584acf2a0ab597f3))
+
 ## [2.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v1.10.0...v2.0.0) (2020-06-01)
 
 
