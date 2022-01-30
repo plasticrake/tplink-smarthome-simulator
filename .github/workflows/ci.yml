@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: npm install
+        run: |
+          npm ci
+
+      - name: Lint
+        run: |
+          npm run lint
+
+  build:
+    name: Build and Test
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+        os: [ubuntu-latest]
+        include:
+          - os: ubuntu-latest
+            node-version: 16.x
+            env:
+              COVERAGE: 1
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: npm install, build and test
+        run: |
+          npm ci
+          npm run build
+          npm run test:ci
+        env:
+          CI: true
+          COVERAGE: '${{ matrix.env.COVERAGE }}'
+
+      - name: Generate Coverage Report
+        if: '${{ matrix.env.COVERAGE }}'
+        run: npm run coverage-report-lcov
+
+      - name: Upload Coverage to Coveralls
+        if: '${{ matrix.env.COVERAGE }}'
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Upload Coverage to Codecov
+        if: '${{ matrix.env.COVERAGE }}'
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
