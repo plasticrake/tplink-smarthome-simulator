@@ -1,11 +1,7 @@
 {
-  "require": [
-    "@babel/register"
-  ],
-  "include": [
-    "src/**/*.js"
-  ],
+  "extends": "@istanbuljs/nyc-config-typescript",
   "all": true,
-  "sourceMap": false,
-  "instrument": false
+  "include": [
+    "src/**/*"
+  ]
 }
