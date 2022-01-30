@@ -94,15 +94,15 @@ class Hs300 extends Hs {
   }
 
   get children() {
-    return Object.keys(this.data.children).map((childId) => {
-      return this.data.children[childId];
-    });
+    return Object.keys(this.data.children).map(
+      (childId) => this.data.children[childId]
+    );
   }
 
   get sysinfoChildren() {
-    return Object.keys(this.data.children).map((childId) => {
-      return this.data.children[childId].sysinfo;
-    });
+    return Object.keys(this.data.children).map(
+      (childId) => this.data.children[childId].sysinfo
+    );
   }
 
   get sysinfo() {
@@ -131,6 +131,12 @@ class Hs300 extends Hs {
     return this.contextFirst.sysinfo.state;
   }
 
+  set relayState(relayState) {
+    this.contextDefaultAll.forEach((ctx) => {
+      ctx.sysinfo.state = relayState;
+    });
+  }
+
   get contextDefaultAll() {
     if (this.contextError) throw this.contextError;
     if (this.currentContext == null) return this.children;
@@ -147,12 +153,6 @@ class Hs300 extends Hs {
     if (this.contextError) throw this.contextError;
     if (this.currentContext == null) return this.children[0];
     return this.currentContext[0];
-  }
-
-  set relayState(relayState) {
-    this.contextDefaultAll.forEach((ctx) => {
-      ctx.sysinfo.state = relayState;
-    });
   }
 }
 

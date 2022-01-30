@@ -46,9 +46,8 @@ class DeviceNetworking extends EventEmitter {
     let response;
     let responseForLog;
     try {
-      ({ response, responseForLog } = this.device.processUdpMessage(
-        decryptedMsg
-      ));
+      ({ response, responseForLog } =
+        this.device.processUdpMessage(decryptedMsg));
     } catch (err) {
       logUdpErr('processUdpMessage, could not process:', decryptedMsg);
       logUdpErr(err);
@@ -106,9 +105,8 @@ class DeviceNetworking extends EventEmitter {
     let response;
     let responseForLog;
     try {
-      ({ response, responseForLog } = this.device.processTcpMessage(
-        decryptedMsg
-      ));
+      ({ response, responseForLog } =
+        this.device.processTcpMessage(decryptedMsg));
     } catch (err) {
       logTcpErr('processTcpMessage, could not process:', decryptedMsg);
       logTcpErr(err);

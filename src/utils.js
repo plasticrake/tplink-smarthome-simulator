@@ -16,6 +16,7 @@ function errCode(fn) {
     } catch (err) {
       const err_code = err.err_code == null ? -1 : err.err_code; // eslint-disable-line camelcase
       const err_msg = `${err.err_msg == null ? err : err.err_msg}`; // eslint-disable-line camelcase
+      // eslint-disable-next-line camelcase
       return { err_code, err_msg };
     }
   };
@@ -113,8 +114,9 @@ function processCommands(json, api, errors, customizerFn) {
       if (module.name === 'context' && !foundFirstContext) {
         foundFirstContext = true;
         if ('context' in api && 'child_ids' in api.context) {
-          const childIds = module.methods.find((v) => v.name === 'child_ids')
-            .args;
+          const childIds = module.methods.find(
+            (v) => v.name === 'child_ids'
+          ).args;
           if (childIds !== undefined) {
             api.context.child_ids(childIds);
           }
@@ -185,7 +187,13 @@ function getDaysInMonth(year, month) {
   return result;
 }
 
-function getDayList(year, month, key, dayListData = [], defaultValue) {
+function getDayList(
+  year,
+  month,
+  key,
+  dayListData = [],
+  defaultValue = undefined
+) {
   const dayList = [];
   if (year != null && month != null) {
     const now = new Date();
@@ -212,7 +220,7 @@ function getDayList(year, month, key, dayListData = [], defaultValue) {
   return dayList;
 }
 
-function getMonthList(year, key, dayListData = [], defaultValue) {
+function getMonthList(year, key, dayListData = [], defaultValue = undefined) {
   const monthList = [];
   if (year != null) {
     for (let month = 1; month <= 12; month += 1) {
