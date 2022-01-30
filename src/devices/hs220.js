@@ -52,12 +52,12 @@ class Hs220 extends Hs200 {
         this.data.dimmer_parameters.fadeOnTime = fadeTime;
       }),
 
-      set_gentle_off_time: errCode(({ fadeTime }) => {
-        this.data.dimmer_parameters.gentleOffTime = fadeTime;
+      set_gentle_off_time: errCode(({ duration }) => {
+        this.data.dimmer_parameters.gentleOffTime = duration;
       }),
 
-      set_gentle_on_time: errCode(({ fadeTime }) => {
-        this.data.dimmer_parameters.gentleOnTime = fadeTime;
+      set_gentle_on_time: errCode(({ duration }) => {
+        this.data.dimmer_parameters.gentleOnTime = duration;
       }),
 
       set_long_press_action: errCode((params) => {
