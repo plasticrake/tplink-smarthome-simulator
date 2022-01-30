@@ -1,5 +1,5 @@
 {
   "extension": ["ts", "js"],
   "recursive": true,
-  "require": ["@babel/register", "source-map-support/register"]
+  "require": ["ts-node/register", "source-map-support/register"]
 }
