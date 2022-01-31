@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v2.0.1...v3.0.0) (2022-01-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* Requires minimum node v12.20.0
+* requires minimum node v12.20.0
+
+* remove babel, add typescript support ([#33](https://github.com/plasticrake/tplink-smarthome-simulator/issues/33)) ([f460255](https://github.com/plasticrake/tplink-smarthome-simulator/commit/f4602554567058364728ffc2216fc5d6134e606e))
+* use typescript ([220daf3](https://github.com/plasticrake/tplink-smarthome-simulator/commit/220daf328c6b5ff980ed0d6a1373acf9f2966309))
+
 ### [2.0.1](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v2.0.0...v2.0.1) (2022-01-30)
 
 
