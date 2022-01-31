@@ -91,7 +91,7 @@ function parseJsonStream(json) {
  * - `context:{child_ids:["A"]}` will return `{ err_code: -14, err_msg: 'entry not exist' }` for commands that support child_id, but other commands will run as normal.
  * - if any of the `child_ids` are invalid or don't exist commands that support `child_ids` will not run the valid ones and will return an `err_code`
  *
- * @param {string} json
+ * @param {string|Buffer} json
  * @param {Object} api
  * @param {Function} [customizerFn]
  * @returns {string}

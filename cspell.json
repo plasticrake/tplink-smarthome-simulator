@@ -1,36 +1,22 @@
 {
-  "version": "0.1",
-
+  "version": "0.2",
   "language": "en",
   "words": [
-    "plasticrake",
-
-    "castarray",
-    "defaultsdeep",
-    "isequal",
-    "jsonparse",
-
-    "camelcase",
-    "customizer",
-    "ifconfig",
-    "polyfill",
-    "preallocate",
-    "rssi",
-    "ssid",
-    "subnet",
-    "truthy",
-    "unencrypted",
-    "wifi",
-
-    "SNDBUF",
-
     "binded",
+    "buildable",
+    "camelcase",
+    "castarray",
+    "customizer",
     "daystat",
+    "defaultsdeep",
     "devs",
     "emeter",
     "heapsize",
+    "ifconfig",
     "igain",
+    "isequal",
     "itarget",
+    "jsonparse",
     "kasa",
     "lightingservice",
     "lightstate",
@@ -38,29 +24,41 @@
     "mday",
     "monthstat",
     "netif",
+    "plasticrake",
+    "polyfill",
+    "preallocate",
     "realtime",
+    "rssi",
     "scaninfo",
     "smartbulb",
     "smarthome",
     "smartlife",
     "smartplugswitch",
     "smartpowerstrip",
+    "SNDBUF",
+    "ssid",
     "stainfo",
+    "subnet",
     "sysinfo",
     "tcsp",
     "timesetting",
     "tplink",
     "tplinkcloud",
+    "truthy",
     "uboot",
+    "unencrypted",
     "vgain",
     "vtarget",
-    "wday"
+    "wday",
+    "wifi"
   ],
   "languageSettings": [
     {
       "languageId": "markdown",
-      "local": "*",
-      "dictionaries": ["node"]
+      "locale": "*",
+      "dictionaries": ["node", "npm", "softwareTerms", "typescript"]
     }
-  ]
+  ],
+  "ignorePaths": ["node_modules", "package-lock.json", "API.md"],
+  "ignoreRegExpList": ["/[/*] eslint[- ].*/gi"]
 }
