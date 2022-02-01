@@ -52,6 +52,16 @@ function generateId(len) {
     .toUpperCase();
 }
 
+function pick(object, keys) {
+  return keys.reduce((obj, key) => {
+    if (object && Object.prototype.hasOwnProperty.call(object, key)) {
+      // eslint-disable-next-line no-param-reassign
+      obj[key] = object[key];
+    }
+    return obj;
+  }, {});
+}
+
 function parseJsonStream(json) {
   const parser = new Parser();
   const results = [];
@@ -114,11 +124,9 @@ function processCommands(json, api, errors, customizerFn) {
       if (module.name === 'context' && !foundFirstContext) {
         foundFirstContext = true;
         if ('context' in api && 'child_ids' in api.context) {
-          const childIds = module.methods.find(
-            (v) => v.name === 'child_ids'
-          ).args;
-          if (childIds !== undefined) {
-            api.context.child_ids(childIds);
+          const childIds = module.methods.find((v) => v.name === 'child_ids');
+          if (childIds !== undefined && childIds.args !== undefined) {
+            api.context.child_ids(childIds.args);
           }
         }
       } else {
@@ -285,6 +293,7 @@ module.exports = {
   randomMac,
   generateId,
   parseJsonStream,
+  pick,
   processCommands,
   randomInt,
   randomFloat,

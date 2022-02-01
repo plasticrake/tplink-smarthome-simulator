@@ -72,6 +72,7 @@ class Device implements DeviceType {
     'lb100',
     'lb120',
     'lb130',
+    'kl430',
   ];
 
   api: ApiType;
@@ -91,6 +92,7 @@ class Device implements DeviceType {
     api: Record<string, unknown>;
     children: Array<{ sysinfo: { id: string } }>;
     data: DataType;
+    get mac(): string;
     reset: () => void;
     constructor: { errors: Record<string, unknown> };
   };
@@ -153,6 +155,10 @@ class Device implements DeviceType {
 
   get children() {
     return this.#deviceInfo.children;
+  }
+
+  get mac() {
+    return this.#deviceInfo.mac;
   }
 
   processMessage(

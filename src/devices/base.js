@@ -15,7 +15,7 @@ class Base {
     this.api = {
       system: {
         get_sysinfo: errCode(() => {
-          return this.data.system.sysinfo;
+          return this.sysinfo;
         }),
       },
       cnCloud: {
@@ -39,6 +39,10 @@ class Base {
         }),
       },
     };
+  }
+
+  get sysinfo() {
+    return this.data.system.sysinfo;
   }
 
   get emeterContext() {
