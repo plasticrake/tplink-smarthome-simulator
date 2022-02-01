@@ -12,7 +12,7 @@ TP-Link Smart Home Device Simulator
 
 I created this so I could automate my tests for [tplink-smarthome-api](https://github.com/plasticrake/tplink-smarthome-api/).
 
-See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples).
+See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples). [@simlu](https://github.com/simlu) has used this in creating [kasa-smart-hub](https://github.com/blackflux/kasa-smart-hub).
 
 [`debug`](https://github.com/visionmedia/debug) is used for output. To see all messages set the DEBUG environment variable.
 To see everything:
