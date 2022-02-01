@@ -17,23 +17,46 @@ describe('Device', function () {
   this.retries(2);
 
   describe('constructor()', function () {
-    it('accept options', function () {
-      const opt = {
-        model: 'hs100',
-        port: 1234,
-        address: '127.0.0.1',
-        data: { deviceId: 'ABC' },
-      };
-      const device = new Device(opt);
-      expect(device).to.have.property('model', opt.model);
-      expect(device).to.have.property('port', opt.port);
-      expect(device).to.have.property('address', opt.address);
-      expect(device).to.have.nested.property(
-        'data.deviceId',
-        opt.data.deviceId
-      );
-      expect(device.api).to.exist;
+    describe('arguments', function () {
+      const opts = [
+        {
+          model: 'hs100',
+          port: 1234,
+          address: '127.0.0.1',
+          alias: 'MY ALIAS',
+          data: { deviceId: 'ABC', mac: 'aa:aa:aa:bb:bb:bb' },
+        },
+      ];
+
+      Device.models.forEach(function (model) {
+        describe(model, function () {
+          opts.forEach(function (opt) {
+            let device;
+            before(function () {
+              device = new Device({ ...opt, model });
+            });
+            it('accept options', function () {
+              expect(device).to.have.property('model', model);
+              expect(device).to.have.property('port', opt.port);
+              expect(device).to.have.property('address', opt.address);
+              expect(device).to.have.nested.property('data.alias', opt.alias);
+              expect(device).to.have.nested.property(
+                'data.deviceId',
+                opt.data.deviceId
+              );
+              expect(device).to.have.nested.property('data.mac', opt.data.mac);
+              expect(device.api).to.exist;
+            });
+
+            it('sets mac', function () {
+              if (opt.data.mac === undefined) this.skip();
+              expect(device.mac).to.eql(opt.data.mac);
+            });
+          });
+        });
+      });
     });
+
     it('defaults', function () {
       const device = new Device({ model: 'hs100' });
       expect(device).to.have.property('port', 0);

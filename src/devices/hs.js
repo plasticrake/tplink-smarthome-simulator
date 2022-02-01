@@ -24,10 +24,7 @@ class Hs extends Base {
     super(data);
     defaultsDeep(this.data, defaultData);
 
-    this.api.system = {
-      get_sysinfo: errCode(() => {
-        return this.sysinfo;
-      }),
+    Object.assign(this.api.system, {
       set_dev_alias: errCode(({ alias }) => {
         this.alias = alias;
       }),
@@ -92,7 +89,7 @@ class Hs extends Base {
       set_dev_icon: errCode((data) => {
         this.data.system.dev_icon = data;
       }),
-    };
+    });
 
     this.api.cnCloud = {
       get_info: errCode(() => {
