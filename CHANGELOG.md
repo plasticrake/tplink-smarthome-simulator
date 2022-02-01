@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v3.0.0...v3.1.0) (2022-02-01)
+
+
+### Features
+
+* add basic support for KL430 Light Strip ([#34](https://github.com/plasticrake/tplink-smarthome-simulator/issues/34)) ([385a5be](https://github.com/plasticrake/tplink-smarthome-simulator/commit/385a5be23fdb0d69f5b8df46b43ddfd1e3451ec2))
+
 ## [3.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v2.0.1...v3.0.0) (2022-01-31)
 
 
