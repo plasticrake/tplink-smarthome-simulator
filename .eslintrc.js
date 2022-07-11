@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2019,
     project: ['./tsconfig.json', './tsconfig.eslint.json'],
   },
   env: {
