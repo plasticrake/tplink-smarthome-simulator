@@ -3,8 +3,8 @@
 # tplink-smarthome-simulator
 
 [![NPM Version](https://img.shields.io/npm/v/tplink-smarthome-simulator.svg)](https://www.npmjs.com/package/tplink-smarthome-simulator)
-[![Build Status](https://github.com/plasticrake/tplink-smarthome-simulator/workflows/CI/badge.svg?branch=master)](https://github.com/plasticrake/tplink-smarthome-simulator/actions?query=workflow%3ACI+branch%3Amaster)
-[![Coverage Status](https://coveralls.io/repos/github/plasticrake/tplink-smarthome-simulator/badge.svg?branch=master)](https://coveralls.io/github/plasticrake/tplink-smarthome-simulator?branch=master)
+[![Build Status](https://github.com/plasticrake/tplink-smarthome-simulator/workflows/CI/badge.svg?branch=main)](https://github.com/plasticrake/tplink-smarthome-simulator/actions?query=workflow%3ACI+branch%3Amain)
+[![Coverage Status](https://coveralls.io/repos/github/plasticrake/tplink-smarthome-simulator/badge.svg?branch=main)](https://coveralls.io/github/plasticrake/tplink-smarthome-simulator?branch=main)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/plasticrake)](https://github.com/sponsors/plasticrake)
 
 <img src="https://user-images.githubusercontent.com/1383980/30628984-4eb5bf5e-9d8e-11e7-9caa-97720ae1eadc.png" align="right" alt="Kasa Screenshot" width=250>
@@ -13,7 +13,7 @@ TP-Link Smart Home Device Simulator
 
 I created this so I could automate my tests for [tplink-smarthome-api](https://github.com/plasticrake/tplink-smarthome-api/).
 
-See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/master/examples). [@simlu](https://github.com/simlu) has used this in creating [kasa-smart-hub](https://github.com/blackflux/kasa-smart-hub).
+See more [examples](https://github.com/plasticrake/tplink-smarthome-simulator/tree/main/examples). [@simlu](https://github.com/simlu) has used this in creating [kasa-smart-hub](https://github.com/blackflux/kasa-smart-hub).
 
 [`debug`](https://github.com/visionmedia/debug) is used for output. To see all messages set the DEBUG environment variable.
 To see everything:
