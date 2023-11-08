@@ -2,14 +2,15 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2019",
-    "lib": ["es2019"],
+    "target": "es2022",
+    "lib": ["es2022"],
     "allowJs": true, // temporary relaxing
     "alwaysStrict": true,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUncheckedIndexedAccess": true,
