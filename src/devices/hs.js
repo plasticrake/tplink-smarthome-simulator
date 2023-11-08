@@ -37,7 +37,7 @@ class Hs extends Base {
           this.data.system.sysinfo.longitude = longitude;
           this.data.system.sysinfo.latitude_i = latitude_i;
           this.data.system.sysinfo.longitude_i = longitude_i;
-        }
+        },
       ),
       set_led_off: errCode(({ off }) => {
         this.data.system.sysinfo.led_off = off;
@@ -150,7 +150,7 @@ class Hs extends Base {
           this.scheduleContext.daystat.day_list,
           () => {
             return utils.randomInt(0, 1440);
-          }
+          },
         );
         return { day_list };
       }),
@@ -161,7 +161,7 @@ class Hs extends Base {
           this.scheduleContext.daystat.day_list,
           () => {
             return utils.randomInt(0, 1440);
-          }
+          },
         );
         return { month_list };
       }),
@@ -283,7 +283,7 @@ class Hs extends Base {
           month,
           key,
           this.emeterContext.daystat.day_list,
-          defaultValue
+          defaultValue,
         );
         return { day_list };
       }),
@@ -305,7 +305,7 @@ class Hs extends Base {
           year,
           key,
           this.emeterContext.daystat.day_list,
-          defaultValue
+          defaultValue,
         );
         return { month_list };
       }),

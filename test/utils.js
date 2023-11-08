@@ -128,8 +128,8 @@ describe('utils', function () {
     it('set_dev_location', function () {
       expect(
         utils.parseJsonStream(
-          '{"system":{"set_dev_alias":{"alias":"new name"}}}'
-        )
+          '{"system":{"set_dev_alias":{"alias":"new name"}}}',
+        ),
       ).to.eql([
         {
           name: 'system',
@@ -140,8 +140,8 @@ describe('utils', function () {
     it('duplicate modules', function () {
       expect(
         utils.parseJsonStream(
-          '{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}'
-        )
+          '{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}',
+        ),
       ).to.eql([
         {
           name: 'system',
@@ -155,7 +155,7 @@ describe('utils', function () {
     });
     it('duplicate methods', function () {
       expect(
-        utils.parseJsonStream('{"system":{"get_sysinfo":{},"get_sysinfo":{}}}')
+        utils.parseJsonStream('{"system":{"get_sysinfo":{},"get_sysinfo":{}}}'),
       ).to.eql([
         {
           name: 'system',

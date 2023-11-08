@@ -44,7 +44,7 @@ class Kl extends Base {
       // eslint-disable-next-line no-unused-vars
       ({ year, month, mday, hour, min, sec }) => {
         // TODO
-      }
+      },
     );
 
     this.api.netif = this.hs.api.netif;
@@ -118,12 +118,12 @@ class Kl extends Base {
 
     this.data.system.sysinfo.light_state = pick(
       this.data['smartlife.iot.lightStrip'].light_state,
-      ['on_off', 'mode', 'hue', 'saturation', 'color_temp', 'brightness']
+      ['on_off', 'mode', 'hue', 'saturation', 'color_temp', 'brightness'],
     );
 
     this.data.system.sysinfo.light_state.dft_on_state = pick(
       this.data['smartlife.iot.lightStrip'].dft_on_state,
-      ['mode', 'hue', 'saturation', 'color_temp', 'brightness']
+      ['mode', 'hue', 'saturation', 'color_temp', 'brightness'],
     );
 
     return this.data.system.sysinfo;

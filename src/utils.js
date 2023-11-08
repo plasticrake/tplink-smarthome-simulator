@@ -141,7 +141,7 @@ function processCommands(json, api, errors, customizerFn) {
             method.results = customizerFn(
               module.name,
               method.name,
-              api[module.name][method.name](method.args)
+              api[module.name][method.name](method.args),
             );
           } else {
             method.results = errors.METHOD_NOT_SUPPORT;
@@ -200,7 +200,7 @@ function getDayList(
   month,
   key,
   dayListData = [],
-  defaultValue = undefined
+  defaultValue = undefined,
 ) {
   const dayList = [];
   if (year != null && month != null) {
@@ -212,7 +212,7 @@ function getDayList(
     getDaysInMonth(year, month).forEach((day) => {
       if (day > lastDay) return; // Don't return data for future dates
       let entry = dayListData.find(
-        (dl) => dl.year === year && dl.month === month && dl.day === day
+        (dl) => dl.year === year && dl.month === month && dl.day === day,
       );
       if (entry == null) {
         const def =
@@ -237,7 +237,7 @@ function getMonthList(year, key, dayListData = [], defaultValue = undefined) {
         month,
         key,
         dayListData,
-        defaultValue
+        defaultValue,
       ).reduce((acc, val) => acc + val[key], 0);
       monthList.push({ year, month, [key]: monthSum });
     }

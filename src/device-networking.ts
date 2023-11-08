@@ -97,7 +97,7 @@ export default class DeviceNetworking extends EventEmitter {
           this.model,
           this.responseDelay,
           rinfo.port,
-          rinfo.address
+          rinfo.address,
         );
         logUdp(responseForLog);
         this.emit('response', {
@@ -112,7 +112,7 @@ export default class DeviceNetworking extends EventEmitter {
           0,
           response.length,
           rinfo.port,
-          rinfo.address
+          rinfo.address,
         );
       });
     }
@@ -123,7 +123,7 @@ export default class DeviceNetworking extends EventEmitter {
       '[%s] TCP DATA',
       this.model,
       socket.remoteAddress,
-      socket.remotePort
+      socket.remotePort,
     );
     const decryptedMsg = decryptWithHeader(msg).toString('utf8');
     logTcp(decryptedMsg);
@@ -157,7 +157,7 @@ export default class DeviceNetworking extends EventEmitter {
           '[%s] TCP responding, delay:%s,',
           this.model,
           this.responseDelay,
-          socket.address()
+          socket.address(),
         );
         logTcp(responseForLog);
         this.emit('response', {

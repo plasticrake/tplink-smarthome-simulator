@@ -167,8 +167,8 @@ class Device implements DeviceType {
     customizerFn?: (
       moduleName: string,
       methodName: string,
-      methodResponse: MethodResponse
-    ) => MethodResponse
+      methodResponse: MethodResponse,
+    ) => MethodResponse,
   ) {
     this.#deviceInfo.reset();
 
@@ -176,7 +176,7 @@ class Device implements DeviceType {
       msg,
       this.api,
       this.#deviceInfo.constructor.errors,
-      customizerFn
+      customizerFn,
     );
 
     let response = encryptFn(responseUnencrypted);
@@ -209,7 +209,7 @@ class Device implements DeviceType {
           });
         }
         return methodResponse;
-      }
+      },
     );
   }
 

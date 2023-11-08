@@ -43,7 +43,7 @@ class Lb extends Base {
       // eslint-disable-next-line no-unused-vars
       ({ year, month, mday, hour, min, sec }) => {
         // TODO
-      }
+      },
     );
 
     this.api.netif = this.hs.api.netif;

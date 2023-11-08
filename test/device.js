@@ -42,7 +42,7 @@ describe('Device', function () {
               expect(device).to.have.nested.property('data.alias', opt.alias);
               expect(device).to.have.nested.property(
                 'data.deviceId',
-                opt.data.deviceId
+                opt.data.deviceId,
               );
               expect(device).to.have.nested.property('data.mac', opt.data.mac);
               expect(device.api).to.exist;
@@ -124,12 +124,12 @@ describe('Device', function () {
               system: { get_sysinfo: {} },
               context: { child_ids: ['01'] },
             }),
-            api
+            api,
           );
           expect(results).to.eql(
             JSON.stringify({
               system: { get_sysinfo: api.system.get_sysinfo() },
-            })
+            }),
           );
         });
 
@@ -137,13 +137,13 @@ describe('Device', function () {
           const results = processCommands(
             '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]}}',
             api,
-            Hs.errors
+            Hs.errors,
           );
           expect(results).to.eql(
             JSON.stringify({
               system: { get_sysinfo: api.system.get_sysinfo() },
               context: { err_code: -1, err_msg: 'module not support' },
-            })
+            }),
           );
         });
 
@@ -151,10 +151,10 @@ describe('Device', function () {
           const results = processCommands(
             '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]},"context":{"child_ids":["03"]}}',
             api,
-            Hs.errors
+            Hs.errors,
           );
           expect(results).to.eql(
-            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}'
+            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}',
           );
         });
 
@@ -162,10 +162,10 @@ describe('Device', function () {
           const results = processCommands(
             '{"system":{"get_sysinfo":{}},"context":{"child_ids":["01"]},"context":{"child_ids":["02"]},"context":{"child_ids":["03"]}}',
             apiWithContext,
-            Hs.errors
+            Hs.errors,
           );
           expect(results).to.eql(
-            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}'
+            '{"system":{"get_sysinfo":{"alias":"test"}},"context":{"err_code":-1,"err_msg":"module not support"},"context":{"err_code":-1,"err_msg":"module not support"}}',
           );
           expect(contextSpy).to.be.calledOnceWithExactly(['01']);
         });
@@ -174,36 +174,36 @@ describe('Device', function () {
       it('should get command results', function () {
         const results = processCommands(
           JSON.stringify({ system: { get_sysinfo: {} } }),
-          api
+          api,
         );
         expect(results).to.eql(
-          JSON.stringify({ system: { get_sysinfo: api.system.get_sysinfo() } })
+          JSON.stringify({ system: { get_sysinfo: api.system.get_sysinfo() } }),
         );
       });
 
       it('should get command results (duplicate modules)', function () {
         const results = processCommands(
           `{"system":{"get_sysinfo":{}},"system":{"get_sysinfo":{}}}`,
-          api
+          api,
         );
         expect(results).to.eql(
           `{"system":{"get_sysinfo":${JSON.stringify(
-            api.system.get_sysinfo()
+            api.system.get_sysinfo(),
           )}},"system":{"get_sysinfo":${JSON.stringify(
-            api.system.get_sysinfo()
-          )}}}`
+            api.system.get_sysinfo(),
+          )}}}`,
         );
       });
 
       it('should get command results (duplicate methods)', function () {
         const results = processCommands(
           `{"system":{"get_sysinfo":{},"get_sysinfo":{}}}`,
-          api
+          api,
         );
         expect(results).to.eql(
           `{"system":{"get_sysinfo":${JSON.stringify(
-            api.system.get_sysinfo()
-          )},"get_sysinfo":${JSON.stringify(api.system.get_sysinfo())}}}`
+            api.system.get_sysinfo(),
+          )},"get_sysinfo":${JSON.stringify(api.system.get_sysinfo())}}}`,
         );
       });
 
@@ -211,12 +211,12 @@ describe('Device', function () {
         const results = processCommands(
           JSON.stringify({ system_invalid: { get_sysinfo: {} } }),
           api,
-          Hs.errors
+          Hs.errors,
         );
         expect(results).to.eql(
           JSON.stringify({
             system_invalid: { err_code: -1, err_msg: 'module not support' },
-          })
+          }),
         );
       });
 
@@ -227,13 +227,13 @@ describe('Device', function () {
             system: { get_sysinfo: {} },
           }),
           api,
-          Hs.errors
+          Hs.errors,
         );
         expect(results).to.eql(
           JSON.stringify({
             system_invalid: { err_code: -1, err_msg: 'module not support' },
             system: { get_sysinfo: api.system.get_sysinfo() },
-          })
+          }),
         );
       });
 
@@ -244,13 +244,13 @@ describe('Device', function () {
             system: { get_sysinfo: {} },
           }),
           api,
-          Hs.errors
+          Hs.errors,
         );
         expect(results).to.eql(
           JSON.stringify({
             system_invalid: { err_code: -1, err_msg: 'module not support' },
             system: { get_sysinfo: api.system.get_sysinfo() },
-          })
+          }),
         );
       });
 
@@ -258,7 +258,7 @@ describe('Device', function () {
         const results = processCommands(
           JSON.stringify({ system: { get_sysinfo_invalid: {} } }),
           api,
-          Hs.errors
+          Hs.errors,
         );
         expect(results).to.eql(
           JSON.stringify({
@@ -268,7 +268,7 @@ describe('Device', function () {
                 err_msg: 'member not support',
               },
             },
-          })
+          }),
         );
       });
     });

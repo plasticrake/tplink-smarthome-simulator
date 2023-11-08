@@ -95,13 +95,13 @@ class Hs300 extends Hs {
 
   get children() {
     return Object.keys(this.data.children).map(
-      (childId) => this.data.children[childId]
+      (childId) => this.data.children[childId],
     );
   }
 
   get sysinfoChildren() {
     return Object.keys(this.data.children).map(
-      (childId) => this.data.children[childId].sysinfo
+      (childId) => this.data.children[childId].sysinfo,
     );
   }
 
