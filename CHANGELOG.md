@@ -1,6 +1,21 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [5.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v4.0.0...v5.0.0) (2023-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **UdpServer:** Changed from an object to a class instance that may
+break consuming code in some edge cases.
+* Requires minimum node version v16
+
+### Features
+
+* Drop support for node < v16 ([#39](https://github.com/plasticrake/tplink-smarthome-simulator/issues/39)) ([c1f1bd9](https://github.com/plasticrake/tplink-smarthome-simulator/commit/c1f1bd93dedb36eb36a0ac220b5239a487620a78))
+* improve debug output ([69920e0](https://github.com/plasticrake/tplink-smarthome-simulator/commit/69920e050b36ebb318b46a759ec4801029496716))
+* **UdpServer:** UdpServer export was changed to a class instance ([#40](https://github.com/plasticrake/tplink-smarthome-simulator/issues/40)) ([ecc96d0](https://github.com/plasticrake/tplink-smarthome-simulator/commit/ecc96d02d9ae03e8a0b5762e2e5bc169c8045f61))
 
 ## [4.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v3.1.0...v4.0.0) (2022-07-11)
 
