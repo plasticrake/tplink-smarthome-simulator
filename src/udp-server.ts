@@ -1,48 +1,47 @@
-import EventEmitter from 'events';
-import dgram from 'dgram';
+import dgram from 'node:dgram';
+import EventEmitter from 'node:events';
+
 import debug from 'debug';
+import type TypedEmitter from 'typed-emitter';
 
 const log = debug('tplink-simulator:udp-server');
 const logErr = debug('tplink-simulator:udp-server:error');
 
-interface UdpServerType extends EventEmitter {
-  start: () => Promise<UdpServerType>;
-  stop: () => void;
-  socketBound: boolean;
-  socket?: dgram.Socket;
-}
+type UdpServerEvents = {
+  message: (msg: Buffer, rinfo: dgram.RemoteInfo) => void;
+};
 
-const Emitter = new EventEmitter();
-Emitter.setMaxListeners(25);
+class UdpServer extends (EventEmitter as new () => TypedEmitter<UdpServerEvents>) {
+  socketBound = false;
 
-const UdpServer: UdpServerType = Object.assign(Emitter, {
-  socketBound: false,
+  socket: dgram.Socket | undefined = undefined;
 
-  socket: undefined,
+  constructor() {
+    super();
+    this.setMaxListeners(25);
+  }
 
-  start: function start({ port = 9999 } = {}): Promise<UdpServerType> {
-    const self = UdpServer;
-
+  start({ port = 9999 } = {}): Promise<UdpServer> {
     return new Promise((resolve, reject) => {
       try {
         const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
-        self.socket = socket;
+        this.socket = socket;
 
         socket.on('listening', () => {
           const address = socket.address();
-          self.socketBound = true;
+          this.socketBound = true;
           log('UDP server listening', address);
-          resolve(UdpServer);
+          resolve(this);
         });
 
         socket.on('message', (msg, rinfo) => {
-          self.emit('message', msg, rinfo);
+          this.emit('message', msg, rinfo);
         });
 
         socket.on('error', (exception) => {
           logErr(exception);
           socket.close();
-          self.socketBound = false;
+          this.socketBound = false;
           reject(exception);
         });
 
@@ -51,15 +50,14 @@ const UdpServer: UdpServerType = Object.assign(Emitter, {
         reject(err);
       }
     });
-  },
+  }
 
-  stop: function stop() {
-    const self = UdpServer;
-    if (self.socketBound) {
-      if (self.socket != null) self.socket.close();
-      self.socketBound = false;
+  stop() {
+    if (this.socketBound) {
+      if (this.socket != null) this.socket.close();
+      this.socketBound = false;
     }
-  },
-});
+  }
+}
 
-export default UdpServer as UdpServerType;
+export default new UdpServer();
