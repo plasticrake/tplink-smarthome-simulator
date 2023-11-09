@@ -7,11 +7,11 @@ import { decrypt, decryptWithHeader } from 'tplink-smarthome-crypto';
 import type { Device } from './device';
 import UdpServer from './udp-server';
 
-const log = debug('device');
-const logUdp = debug('device:udp');
-const logUdpErr = debug('device:udp:error');
-const logTcp = debug('device:tcp');
-const logTcpErr = debug('device:tcp:error');
+const log = debug('tplink-simulator:device');
+const logUdp = debug('tplink-simulator:device:udp');
+const logUdpErr = debug('tplink-simulator:device:udp:error');
+const logTcp = debug('tplink-simulator:device:tcp');
+const logTcpErr = debug('tplink-simulator:device:tcp:error');
 
 const delay = (t: number) =>
   new Promise((resolve) => {

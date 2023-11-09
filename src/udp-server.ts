@@ -2,8 +2,8 @@ import EventEmitter from 'events';
 import dgram from 'dgram';
 import debug from 'debug';
 
-const log = debug('udp-server');
-const logErr = debug('udp-server:error');
+const log = debug('tplink-simulator:udp-server');
+const logErr = debug('tplink-simulator:udp-server:error');
 
 interface UdpServerType extends EventEmitter {
   start: () => Promise<UdpServerType>;

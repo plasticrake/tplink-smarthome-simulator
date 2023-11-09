@@ -9,7 +9,7 @@ const Hs = require('./hs');
 
 const defaultData = require('./data/hs300');
 
-const logDebug = debug('DEBUG');
+const logDebug = debug('tplink-simulator:DEBUG');
 
 class Hs300 extends Hs {
   constructor(data) {
