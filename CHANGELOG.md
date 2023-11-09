@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.1](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v5.0.0...v5.0.1) (2023-11-09)
+
+
+### Bug Fixes
+
+* move typed-emitter to dependencies ([f823865](https://github.com/plasticrake/tplink-smarthome-simulator/commit/f823865973a5a54dbbf47d2c9af816285b968ec6))
+
 ## [5.0.0](https://github.com/plasticrake/tplink-smarthome-simulator/compare/v4.0.0...v5.0.0) (2023-11-09)
 
 
